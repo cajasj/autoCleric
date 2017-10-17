@@ -52,22 +52,28 @@ namespace autoResign
              {
                  if (args.Frame.IsMain)
                  {
-                     args.Frame.ExecuteJavaScriptAsync("alert('mainfram is done');");
+                     var autoUser = string.Format("document.getElementById('fieldUsername').value ='{0}';", this.user);
+                     var autoPass = string.Format("document.getElementById('fieldPassword').value ='{0}';", this.pass);
+                     var autologin =string.Format("document.getElementById('btnEnter').click();");
+                     args.Frame.ExecuteJavaScriptAsync(autoUser);
+                     args.Frame.ExecuteJavaScriptAsync(autoPass);
+        //             args.Frame.ExecuteJavaScriptAsync(autologin);
+                     //input id is fieldUsername name username type text
+                     //input id is fieldPassword type apssword name password
+                     //button typ submit id btnEnter value "Enter"
                  }
              };
         }
         private void powerSchoolForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-         
+
             
             Cef.Shutdown();
-            Debug.WriteLine(this.user + " test " + this.pass);
+           // Debug.WriteLine(this.user + " test " + this.pass);
+            this.Dispose();
         }
   
             
-            //input id is fieldUsername name username type text
-            //input id is fieldPassword type apssword name password
-            //button typ submit id btnEnter value "Enter"
         
 
     }
