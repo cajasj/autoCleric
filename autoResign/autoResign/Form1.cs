@@ -87,6 +87,8 @@ namespace autoResign
                         fullName = parseRange.Cells[i, 2].Value2.ToString();
                         firstName = fullName;
                         parseName(ref lastName,ref firstName);
+                        listViewData[i - 2, 0] = lastName;
+                        listViewData[i - 2, 1] = firstName;
                         fullName = lastName + "," + firstName;
                     }
                      
