@@ -17,9 +17,9 @@ namespace autoResign
     public partial class powerSchoolForm : Form
     {
         Thread retryThread;
+        Thread credInput;
         public ChromiumWebBrowser chrome;
         public credentialInput retryInput;
-        private string currenturl = "";
         private string user="";
         private string pass="";
         private string url = "https://bridgeportedu.powerschool.com/admin/home.html";
@@ -66,6 +66,14 @@ namespace autoResign
                      //input id is fieldPassword type apssword name password
                      //button typ submit id btnEnter value "Enter"
                  }else{
+                     MessageBox.Show("wrong credential please enter again");
+                     retryInput = new credentialInput();
+                     credInput = new Thread(()=>retryInput.ShowDialog());
+                     credInput.Start();
+                     while (credInput.IsAlive) ;
+                     this.user = retryInput.getName;
+                     this.pass = retryInput.getPass;
+                     Console.WriteLine(this.user + " using properties " + this.pass);
                      
                  }
              };
@@ -103,7 +111,11 @@ namespace autoResign
                     if (response.Success && response.Result != null)
                     {
                         this.loginFail = true;
-                       
+
+                    }
+                    else
+                    {
+                        this.loginFail = false;
                     }
                 }
             });

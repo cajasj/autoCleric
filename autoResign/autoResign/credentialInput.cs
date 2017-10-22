@@ -12,8 +12,8 @@ namespace autoResign
 {
     public partial class credentialInput : Form
     {
-        public string credUser = "";
-        public string credPass = "";
+        private string credUser = "";
+        private string credPass = "";
         public credentialInput()
         {
             InitializeComponent();
@@ -25,6 +25,14 @@ namespace autoResign
             credUser = retryUser.Text;
             credPass = retryPass.Text;
             this.Close();
+        }
+        public string getName
+        {
+            get { return credUser; }
+        }
+        public string getPass
+        {
+            get { return credPass; }
         }
     }
 }
