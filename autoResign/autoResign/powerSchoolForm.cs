@@ -20,11 +20,14 @@ namespace autoResign
         Thread credInput;
         public ChromiumWebBrowser chrome;
         public credentialInput retryInput;
+
         private string user="";
         private string pass="";
         private string url = "https://bridgeportedu.powerschool.com/admin/home.html";
         private int count = 0;
+        private bool failHolder = false;
         private bool loginFail = false;
+        private bool headerFail = false;
         public powerSchoolForm(string uName, string uPass)
         {
             user = uName;
@@ -48,24 +51,49 @@ namespace autoResign
             chrome.Dock = DockStyle.Fill;   
         }
         public void loadJS() {
+            
             chrome.FrameLoadEnd += (sender, args) =>
-             {
-                 if (args.Frame.IsMain && ! this.loginFail)
+            {
+                const string checkButton = @"(function(){ " +
+                        "if( document.getElementById('btnEnter')){" +
+                        "  return true" +
+                        "}else {" +
+                        "  return false" +
+                        "} " +
+                        "})();";
+                    const string checkHeader = @"(function(){ " +
+                                 "if( document.getElementById('branding-powerschool')){" +
+                                 "  return true" +
+                                 "}else {" +
+                                 "  return false" +
+                                 "} " +
+                                 "})();";
+                 if (args.Frame.IsMain && this.loginFail==false)
                  {
-                     
-                     retryThread = new Thread(() => jsLogin(args));
+                    
+                    retryThread = new Thread(() => jsLogin(args));
                      retryThread.Start();
                      
                      count++;
                      Console.WriteLine("count is " + count);
                      while (retryThread.IsAlive);
-                     
-                     checkLoginButton();
-                                  
-                     //input id is fieldUsername name username type text
-                     //input id is fieldPassword type apssword name password
-                     //button typ submit id btnEnter value "Enter"
-                 }else{
+                    if (this.headerFail == true)
+                    {
+                        checkLoginButton(checkHeader);
+                        this.headerFail = this.failHolder;
+                    }
+                    else
+                    {
+                        checkLoginButton(checkButton);
+                        this.loginFail = this.failHolder;
+                    }
+                    //branding-powerschool id 
+                    //input id is fieldUsername name username type text
+                    //input id is fieldPassword type apssword name password
+                    //button typ submit id btnEnter value "Enter"
+                }
+                 else
+                 {
                      MessageBox.Show("wrong credential please enter again");
                      retryInput = new credentialInput();
                      credInput = new Thread(()=>retryInput.ShowDialog());
@@ -74,7 +102,10 @@ namespace autoResign
                      this.user = retryInput.getName;
                      this.pass = retryInput.getPass;
                      Console.WriteLine(this.user + " using properties " + this.pass);
-                     
+                     credInput.Abort();
+                     this.loginFail = false;
+                    this.headerFail = true;
+                     chrome.Load(url);
                  }
              };
         }
@@ -98,24 +129,23 @@ namespace autoResign
             
         }
 
-        private void checkLoginButton()
+        private void checkLoginButton(string checkArg)
         {
-            const string checkLoginButton = @"(function(){ " +
-                         "return document.getElementById('btnEnter').value; " +
-                         "})();";
-            chrome.EvaluateScriptAsync(checkLoginButton).ContinueWith(t =>
+            
+
+            chrome.EvaluateScriptAsync(checkArg).ContinueWith(t =>
             {
                 if (!t.IsFaulted)
                 {
                     var response = t.Result;
                     if (response.Success && response.Result != null)
                     {
-                        this.loginFail = true;
-
+                        this.failHolder = true;
+                    Console.WriteLine("login fail is trye " + response.Result);
                     }
                     else
                     {
-                        this.loginFail = false;
+                        this.failHolder = false;
                     }
                 }
             });
