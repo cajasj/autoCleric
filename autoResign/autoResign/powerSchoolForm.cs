@@ -20,21 +20,69 @@ namespace autoResign
         Thread credInput;
         public ChromiumWebBrowser chrome;
         public credentialInput retryInput;
-
+        public delegate void delegateRetry();
+        public delegate void delegateChecks(string script, string log1, string log2);
         private string user="";
         private string pass="";
         private string url = "https://bridgeportedu.powerschool.com/admin/home.html";
         private int count = 0;
-        private bool failHolder = false;
-        private bool loginFail = false;
-        private bool headerFail = false;
+        private bool loginFail = true;
+        private bool threadRetry = false;
+        private string foundLogOut = "login success";
+        private string foundLogIn = "login Fail";
+        private string delegateMessage = "";
+        const string checkLogout = @"(function(){ " +
+                     "if( document.getElementById('btnLogout')){" +
+                     "  return true" +
+                     "}else {" +
+                     "  return false" +
+                     "} " +
+                     "})();";
+
+        const string checkLogin = @"(function(){ " +
+                "if( document.getElementById('btnEnter')){" +
+                "  return true" +
+                "}else {" +
+                "  return false" +
+                "} " +
+                "})();";
         public powerSchoolForm(string uName, string uPass)
         {
             user = uName;
             pass = uPass;
             InitializeComponent();
             initChrome();
-            loadJS();
+            delegateMessage = "\n\nwe're in auto login method now \n\n";
+            loadJS(loginThread,delegateMessage);
+            delegateMessage = "\n\nwe're checking login button \n\n";
+
+
+
+            Console.WriteLine(delegateMessage);
+           
+                loadCheckJS(checkLoginButton, foundLogIn, foundLogOut, checkLogout);
+           
+            Console.WriteLine("after check methold loginfail is :" + loginFail);
+
+        
+                if (loginFail == false)
+                {
+                    Console.WriteLine("/n/nfound logout button /n/n");
+
+                }
+                else
+                {
+                    delegateMessage = "\n\nwe're in retry login now " + loginFail.ToString() + " thisfailholder \n\n";
+
+                    loadJS(retryLog, delegateMessage);
+
+                }
+            
+            //delegateRetry retryLogMethod = retryLog;
+
+
+
+
         }
 
         private void powerSchoolForm_Load(object sender, EventArgs e)
@@ -50,105 +98,140 @@ namespace autoResign
             this.Controls.Add(chrome);
             chrome.Dock = DockStyle.Fill;   
         }
-        public void loadJS() {
+        public void loadJS(delegateRetry methodName, string message) {
             
             chrome.FrameLoadEnd += (sender, args) =>
             {
-                const string checkButton = @"(function(){ " +
-                        "if( document.getElementById('btnEnter')){" +
-                        "  return true" +
-                        "}else {" +
-                        "  return false" +
-                        "} " +
-                        "})();";
-                    const string checkHeader = @"(function(){ " +
-                                 "if( document.getElementById('branding-powerschool')){" +
-                                 "  return true" +
-                                 "}else {" +
-                                 "  return false" +
-                                 "} " +
-                                 "})();";
-                 if (args.Frame.IsMain && this.loginFail==false)
-                 {
-                    
-                    retryThread = new Thread(() => jsLogin(args));
-                     retryThread.Start();
-                     
-                     count++;
-                     Console.WriteLine("count is " + count);
-                     while (retryThread.IsAlive);
-                    if (this.headerFail == true)
-                    {
-                        checkLoginButton(checkHeader);
-                        this.headerFail = this.failHolder;
-                    }
-                    else
-                    {
-                        checkLoginButton(checkButton);
-                        this.loginFail = this.failHolder;
-                    }
-                    //branding-powerschool id 
-                    //input id is fieldUsername name username type text
-                    //input id is fieldPassword type apssword name password
-                    //button typ submit id btnEnter value "Enter"
+                
+                if (args.Frame.IsMain)
+                {
+                    Console.WriteLine(message);
+                    methodName();
                 }
-                 else
-                 {
-                     MessageBox.Show("wrong credential please enter again");
-                     retryInput = new credentialInput();
-                     credInput = new Thread(()=>retryInput.ShowDialog());
-                     credInput.Start();
-                     while (credInput.IsAlive) ;
-                     this.user = retryInput.getName;
-                     this.pass = retryInput.getPass;
-                     Console.WriteLine(this.user + " using properties " + this.pass);
-                     credInput.Abort();
-                     this.loginFail = false;
-                    this.headerFail = true;
-                     chrome.Load(url);
-                 }
-             };
-        }
+                // turn this into a method
 
+            };
+        }
+        public void loadCheckJS(delegateChecks methodCheck,string log1, string log2, string checkScript)
+        {
+           
+            chrome.FrameLoadEnd += (sender, args) =>
+            {
+                if (!args.Frame.IsMain)
+                {
+                    Console.WriteLine(this.delegateMessage);
+                    methodCheck(checkScript,log1,log2); 
+                }
+                // turn this into a method
+
+            };
+        }
+        public void loginThread()
+        {
+
+            retryThread = new Thread(() => jsLogin());
+            retryThread.Start();
+
+            count++;
+            Console.WriteLine("count is " + count);
+            while (retryThread.IsAlive) ;
+            retryThread.Abort();
+            Console.WriteLine("login thread done");
+        }
+        public void retryLog()
+        {
+            MessageBox.Show("wrong credential please enter again");
+            retryInput = new credentialInput();
+            credInput = new Thread(() => retryInput.ShowDialog());
+            credInput.Start();
+            while (credInput.IsAlive) ;
+            Console.WriteLine("cred input thread done");
+
+            this.user = retryInput.getName;
+            this.pass = retryInput.getPass;
+            Console.WriteLine(this.user + " using properties " + this.pass);
+            credInput.Abort();
+            chrome.Load(url);
+            //this needs to be passed into load js
+        }
+    
         private void powerSchoolForm_FormClosing(object sender, FormClosingEventArgs e)
         { 
             Cef.Shutdown();  
             this.Dispose();
         }
 
-        private void jsLogin(FrameLoadEndEventArgs args)
+        private void jsLogin()
         {
             var autoUser = string.Format("document.getElementById('fieldUsername').value ='{0}';", this.user);
             var autoPass = string.Format("document.getElementById('fieldPassword').value ='{0}';", this.pass);
             var autologin = string.Format("document.getElementById('btnEnter').click();");
 
-            args.Frame.ExecuteJavaScriptAsync(autoUser);
-            args.Frame.ExecuteJavaScriptAsync(autoPass);
-            args.Frame.ExecuteJavaScriptAsync(autologin);
+            chrome.ExecuteScriptAsync(autoUser);
+            chrome.ExecuteScriptAsync(autoPass);
+            chrome.ExecuteScriptAsync(autologin);
             retryThread.Abort();
             
         }
 
-        private void checkLoginButton(string checkArg)
+        private void checkLoginButton(string checkArg,string logout, string login)
         {
             
-
+            string log="in check log if response result is ";
             chrome.EvaluateScriptAsync(checkArg).ContinueWith(t =>
             {
                 if (!t.IsFaulted)
                 {
                     var response = t.Result;
-                    if (response.Success && response.Result != null)
+                    if (response.Success && response.Result != null )
                     {
-                        this.failHolder = true;
-                    Console.WriteLine("login fail is trye " + response.Result);
+                        if ((bool)response.Result == true)
+                        {
+                            Console.WriteLine(log + (bool)response.Result + " failholder now " + loginFail);
+                            loginFail = (bool)response.Result;
+                        }
+                        else if ((bool)response.Result == false)
+                        {
+                            Console.WriteLine(log + (bool)response.Result + " else failholder now " + loginFail);
+                            loginFail = (bool)response.Result;
+                        }
+
+                         
                     }
-                    else
-                    {
-                        this.failHolder = false;
-                    }
+                    
                 }
             });
         }
     }
 }
+//if (this.logoutFail == true)
+//                    {
+//    checkLoginButton(checkLogout, foundLogoOut, foundLogIn);
+//    this.logoutFail = this.failHolder;
+//    Console.WriteLine("did it found logout button? " + logoutFail);
+//}
+//                    else
+//                    {
+//    checkLoginButton(checkButton, foundLogIn, foundLogoOut);
+//    this.loginFail = this.failHolder;
+//    Console.WriteLine("did it found login button? " + loginFail);
+//}
+//                    //branding-powerschool id 
+//                    //input id is fieldUsername name username type text
+//                    //input id is fieldPassword type apssword name password
+//                    //button typ submit id btnEnter value "Enter"
+//else
+//                 {
+//                     MessageBox.Show("wrong credential please enter again");
+//                     retryInput = new credentialInput();
+//credInput = new Thread(()=>retryInput.ShowDialog());
+//credInput.Start();
+//                     while (credInput.IsAlive) ;
+//                     this.user = retryInput.getName;
+//                     this.pass = retryInput.getPass;
+//                     Console.WriteLine(this.user + " using properties " + this.pass);
+//credInput.Abort();
+//                     this.loginFail = true;
+//                    this.logoutFail = true;
+//chrome.Load(url);
+//}
