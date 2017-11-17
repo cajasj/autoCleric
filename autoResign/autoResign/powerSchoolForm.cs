@@ -16,25 +16,53 @@ namespace autoResign
 {
     public partial class powerSchoolForm : Form
     {
+        static AutoResetEvent autoResetEvent = new AutoResetEvent(false);
         Thread retryThread;
         Thread credInput;
+        Thread checkThread;
         public ChromiumWebBrowser chrome;
         public credentialInput retryInput;
-
         private string user="";
         private string pass="";
         private string url = "https://bridgeportedu.powerschool.com/admin/home.html";
         private int count = 0;
-        private bool failHolder = false;
         private bool loginFail = false;
-        private bool headerFail = false;
+        private bool foundLogOut = false;
+        protected bool foundLogIn = false;
+
+        const string checkLogOut = @"(function(){ " +
+                     "if( document.getElementById('btnLogout')){" +
+                     "  return true" +
+                     "}else {" +
+                     "  return false" +
+                     "} " +
+                     "})();";
         public powerSchoolForm(string uName, string uPass)
         {
+          
             user = uName;
             pass = uPass;
             InitializeComponent();
             initChrome();
-            loadJS();
+            //chrome.LoadingStateChanged += OnLoadingStageChanged;]
+            
+            Console.WriteLine("line 56 found logout is anad login fail is " + foundLogOut + " " + loginFail);
+            if (foundLogOut == false)
+            {
+
+                loadJS();
+
+                loadCheckJS();
+                Console.WriteLine("line 60 foundlog out is false and foundin is " + foundLogIn);
+                foundLogIn = loginFail;
+                foundLogOut = loginFail;
+
+            }
+            else
+            {
+                foundLogIn = true;
+
+            }
         }
 
         private void powerSchoolForm_Load(object sender, EventArgs e)
@@ -44,69 +72,54 @@ namespace autoResign
 
         public void initChrome()
         {    
+            
             CefSettings settings = new CefSettings();
             Cef.Initialize(settings);
             chrome = new ChromiumWebBrowser(url);
             this.Controls.Add(chrome);
-            chrome.Dock = DockStyle.Fill;   
+            chrome.Dock = DockStyle.Fill;
+
         }
         public void loadJS() {
-            
+             
             chrome.FrameLoadEnd += (sender, args) =>
             {
-                const string checkButton = @"(function(){ " +
-                        "if( document.getElementById('btnEnter')){" +
-                        "  return true" +
-                        "}else {" +
-                        "  return false" +
-                        "} " +
-                        "})();";
-                    const string checkHeader = @"(function(){ " +
-                                 "if( document.getElementById('branding-powerschool')){" +
-                                 "  return true" +
-                                 "}else {" +
-                                 "  return false" +
-                                 "} " +
-                                 "})();";
-                 if (args.Frame.IsMain && this.loginFail==false)
-                 {
-                    
-                    retryThread = new Thread(() => jsLogin(args));
-                     retryThread.Start();
-                     
-                     count++;
-                     Console.WriteLine("count is " + count);
-                     while (retryThread.IsAlive);
-                    if (this.headerFail == true)
+                
+                Console.WriteLine("LINE 84foundlogin before frame load " + foundLogIn);
+                if (args.Frame.IsMain)
+                {
+                    if (foundLogIn == false)
                     {
-                        checkLoginButton(checkHeader);
-                        this.headerFail = this.failHolder;
+                        retryThread = new Thread(() => jsLogin(args));
+                        
+                        retryThread.Start();
+                      //  autoResetEvent.WaitOne();
+                        //  autoResetEvent = new AutoResetEvent(false);
+
+                        count++;
+                        Console.WriteLine("count is " + count);
+                        while (retryThread.IsAlive) ;
+
+                        //branding-powerschool id 
+                        //input id is fieldUsername name username type text
+                        //input id is fieldPassword type apssword name password
+                        //button typ submit id btnEnter value "Enter"
                     }
-                    else
+                    else if (foundLogOut == false)
                     {
-                        checkLoginButton(checkButton);
-                        this.loginFail = this.failHolder;
+                        Console.WriteLine("\n\n LINE 105 before the message box show \n\n");
+                        MessageBox.Show("wrong credential please enter again");
+                        retryInput = new credentialInput();
+                        credInput = new Thread(() => retryInput.ShowDialog());
+                        credInput.Start();
+                        while (credInput.IsAlive) ;
+                        user = retryInput.getName;
+                        pass = retryInput.getPass;
+                        Console.WriteLine(user + " using properties " + pass);
+                        credInput.Abort();
+                        chrome.Load(url);
                     }
-                    //branding-powerschool id 
-                    //input id is fieldUsername name username type text
-                    //input id is fieldPassword type apssword name password
-                    //button typ submit id btnEnter value "Enter"
                 }
-                 else
-                 {
-                     MessageBox.Show("wrong credential please enter again");
-                     retryInput = new credentialInput();
-                     credInput = new Thread(()=>retryInput.ShowDialog());
-                     credInput.Start();
-                     while (credInput.IsAlive) ;
-                     this.user = retryInput.getName;
-                     this.pass = retryInput.getPass;
-                     Console.WriteLine(this.user + " using properties " + this.pass);
-                     credInput.Abort();
-                     this.loginFail = false;
-                    this.headerFail = true;
-                     chrome.Load(url);
-                 }
              };
         }
 
@@ -125,14 +138,31 @@ namespace autoResign
             args.Frame.ExecuteJavaScriptAsync(autoUser);
             args.Frame.ExecuteJavaScriptAsync(autoPass);
             args.Frame.ExecuteJavaScriptAsync(autologin);
+            //autoResetEvent.Set();
             retryThread.Abort();
             
         }
-
-        private void checkLoginButton(string checkArg)
+        //private void OnLoadingStageChanged(object sender, LoadingStateChangedEventArgs args)
+        //{
+        //    if (args.IsLoading == false)
+        //    {
+        //        checkLoginButton(checkLogOut, ref loginFail);
+        //    }
+        //}
+        private void loadCheckJS() {
+            chrome.FrameLoadEnd += (sender, args) =>
+                {
+                    if (args.Frame.IsMain)
+                    {
+                       checkThread = new Thread(() => checkLoginButton(checkLogOut, ref loginFail));
+                        checkThread.Start();
+                    }
+                    };
+            }
+        private void checkLoginButton(string checkArg,ref bool loginfail)
         {
-            
 
+            bool localBool=false;
             chrome.EvaluateScriptAsync(checkArg).ContinueWith(t =>
             {
                 if (!t.IsFaulted)
@@ -140,15 +170,19 @@ namespace autoResign
                     var response = t.Result;
                     if (response.Success && response.Result != null)
                     {
-                        this.failHolder = true;
-                    Console.WriteLine("login fail is trye " + response.Result);
-                    }
-                    else
-                    {
-                        this.failHolder = false;
+                        localBool = (bool)response.Result;
+                        Console.WriteLine("\n\n LINE 162 local bool in if statement is "+localBool);
+
+                        loginFail = localBool;
+                        foundLogIn = localBool;
+                        autoResetEvent.Set();
                     }
                 }
             });
+            autoResetEvent.WaitOne();
+            Console.WriteLine("\n\n LINE 166 pass by reference loginfail is " + loginFail + " local bool is " +localBool);
+            //foundLogIn = localBool;
+            //loginFail = localBool;
         }
     }
 }
