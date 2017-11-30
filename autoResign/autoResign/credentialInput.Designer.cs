@@ -54,6 +54,7 @@
             this.cancel.TabIndex = 1;
             this.cancel.Text = "cancel";
             this.cancel.UseVisualStyleBackColor = true;
+            this.cancel.Click += new System.EventHandler(this.cancel_Click);
             // 
             // retryUser
             // 

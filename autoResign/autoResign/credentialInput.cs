@@ -34,5 +34,11 @@ namespace autoResign
         {
             get { return credPass; }
         }
+
+        private void cancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
+
+        }
     }
 }

@@ -25,6 +25,7 @@ namespace autoResign
         private string user = "";
         private string pass = "";
         private string url = "https://bridgeportedu.powerschool.com/admin/home.html";
+        private string staffURL = "https://bridgeportedu.powerschool.com/admin/faculty/search.html";
         private int count = 0;
         private bool loginSuccess = false;
         private bool foundLogOut = true;
@@ -46,20 +47,10 @@ namespace autoResign
             initChrome();
             //chrome.LoadingStateChanged += OnLoadingStageChanged;]
             Console.WriteLine("line 56 found logout is anad login fail is " + foundLogOut + " " + foundLogIn);
-
-            if (loginSuccess == false)
-            {
-
-               loadJS();
-
-                loadCheckJS();
-                Console.WriteLine("line 60 foundlog out is false and foundin is " + foundLogIn);
-                if (foundLogIn == false && foundLogOut == true)
-                {
-                    loginSuccess = true;
-                }
-
-            }
+            loadJS();
+            loadCheckJS();
+            searchTeacher();
+            Console.WriteLine("line 60 foundlog out is false and foundin is " + foundLogIn);
            
         }
 
@@ -86,26 +77,11 @@ namespace autoResign
             {
 
                 Console.WriteLine("LINE 84foundlogin before frame load " + foundLogIn);
-                if (args.Frame.IsMain)
+                if (args.Frame.IsMain && loginSuccess == false)
                 {
-
-                    if (foundLogIn == true)
+                    if (foundLogOut == false)
                     {
-                        retryThread = new Thread(() => jsLogin(args));
 
-                        retryThread.Start();
-                     
-
-                        count++;
-                        Console.WriteLine("count is " + count);
-                        while (retryThread.IsAlive) ;
-                    } 
-                        //branding-powerschool id 
-                        //input id is fieldUsername name username type text
-                        //input id is fieldPassword type apssword name password
-                        //button typ submit id btnEnter value "Enter"
-                     if (foundLogOut == false)
-                    {
                         Console.WriteLine("\n\n LINE 105 before the message box show \n\n");
                         MessageBox.Show("wrong credential please enter again");
                         retryInput = new credentialInput();
@@ -114,10 +90,14 @@ namespace autoResign
                         while (credInput.IsAlive) ;
                         this.user = retryInput.getName;
                         this.pass = retryInput.getPass;
-                        Console.WriteLine(user + " using properties " + pass); 
-                        chrome.Load(url);
+                        Console.WriteLine(user + " using properties " + pass);
+                        Console.WriteLine("count is " + count);
+
                     }
-                    autoResetEvent.Set();
+                    retryThread = new Thread(() => jsLogin(args));
+                    retryThread.Start();
+                    Console.WriteLine("count is " + count);
+                    while (retryThread.IsAlive) ;
                 }
             };
         }
@@ -137,17 +117,12 @@ namespace autoResign
             args.Frame.ExecuteJavaScriptAsync(autoUser);
             args.Frame.ExecuteJavaScriptAsync(autoPass);
             args.Frame.ExecuteJavaScriptAsync(autologin);
-            autoResetEvent.Set();
+
             retryThread.Abort();
 
         }
-        //private void OnLoadingStageChanged(object sender, LoadingStateChangedEventArgs args)
-        //{
-        //    if (args.IsLoading == false)
-        //    {
-        //        checkLoginButton(checkLogOut, ref loginFail);
-        //    }
-        //}
+        //studentSearchInput id for student input
+        //teacherSearchInput id for teacher input
         private void loadCheckJS()
         {
             chrome.FrameLoadEnd += (sender, args) =>
@@ -156,8 +131,29 @@ namespace autoResign
                 {
                     checkThread = new Thread(() => checkLoginButton(checkLogOut));
                     checkThread.Start();
+                  ///  autoResetEvent.WaitOne();
                 }
             };
+        }
+        private void searchTeacher()
+        {
+            chrome.FrameLoadEnd += (sender, args) =>
+            {
+                if (args.Frame.IsMain && loginSuccess==true)
+                {
+                    Console.WriteLine("\n\n\nin the search teacher function \n\n\n");
+                    autoSearch(args);
+                }
+            };
+        }
+        private void autoSearch(FrameLoadEndEventArgs args)
+        {
+            
+               var fillTeacherField = string.Format("document.getElementById('teacherSearchInput').value ='{0}';", "/");
+            var clickSearch= string.Format("document.getElementById('btnSearch').click();");
+
+            args.Frame.ExecuteJavaScriptAsync(fillTeacherField);
+            args.Frame.ExecuteJavaScriptAsync(clickSearch);
         }
         private void checkLoginButton(string checkArg)
         {
@@ -165,7 +161,7 @@ namespace autoResign
             bool localBool = false;
             chrome.EvaluateScriptAsync(checkArg).ContinueWith(t =>
             {
-                if (!t.IsFaulted)
+                if (!t.IsFaulted && loginSuccess==false)
                 {
                     var response = t.Result;
                     if (response.Success && response.Result != null)
@@ -177,15 +173,19 @@ namespace autoResign
                         foundLogOut = localBool;
                         foundLogIn = !localBool;
 
-                        autoResetEvent.Set();
+                        if (foundLogIn == false && foundLogOut == true)
+                        {
+                            Console.WriteLine("where found in false found out true");
+                            loginSuccess = true;
+                            chrome.Load(staffURL);
+                        }
+                        //autoResetEvent.Set();
                     }
+                    Console.WriteLine("response success and resut " + response.Success + " " + response.Result);
                 }
             });
-
-            autoResetEvent.WaitOne();
             Console.WriteLine("\n\n LINE 166 foundlogin is " + foundLogIn + " found logout is " + foundLogOut);
-            //foundLogIn = localBool;
-            //loginFail = localBool;
+            checkThread.Abort();
         }
     }
 }
