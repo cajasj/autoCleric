@@ -38,6 +38,25 @@ namespace autoResign
                      "  return false" +
                      "} " +
                      "})();";
+        const string loopCustomScreens = @"(function(){" +
+                   "var frameMenu=window.frames['menu'];" +
+                   "var list = frameMenu.document.getElementById('tchr_custom_pages');" +
+                   "var listItem = list.getElementsByTagName('a');" +
+                   "var anchorText='Conversion Data';" +
+                   "for(var i =0; i<listItem.length; i++){ " +
+                        "if(listItem[i].text==anchorText){	" +
+                            "listItem[i].click();" +
+                            "break;" +
+                        "}" +
+                    "}" +
+                    "})();";
+        const string checkTagDebug = @"(function(){ " +
+                    "if( document.getElementById('tchr_custom_pages')){" +
+                    "  return true" +
+                    "}else {" +
+                    "  return false" +
+                    "} " +
+                    "})();";
         public powerSchoolForm(string uName, string uPass)
         {
 
@@ -148,12 +167,19 @@ namespace autoResign
         }
         private void autoSearch(FrameLoadEndEventArgs args)
         {
-            
-               var fillTeacherField = string.Format("document.getElementById('teacherSearchInput').value ='{0}';", "/");
+            string fNameContains = "first_name contains ";
+            string lNameContains = " ; last_name contains ";
+            var fillTeacherField = string.Format("document.getElementById('teacherSearchInput').value ='{0}{1}{2}{3}';", fNameContains, " ",lNameContains," ");
             var clickSearch= string.Format("document.getElementById('btnSearch').click();");
-
             args.Frame.ExecuteJavaScriptAsync(fillTeacherField);
             args.Frame.ExecuteJavaScriptAsync(clickSearch);
+            searchListItems(args);
+        }
+        private void searchListItems(FrameLoadEndEventArgs args)
+        {
+            args.Frame.ExecuteJavaScriptAsync(loopCustomScreens);
+
+
         }
         private void checkLoginButton(string checkArg)
         {
