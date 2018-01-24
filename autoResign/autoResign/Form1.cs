@@ -59,6 +59,7 @@ namespace autoResign
             string [] idArray = multiLineID.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             string [] notNumber = new String [idArray.Length];
             int k = 0;
+            string notNumberCombined;
             if (numberID.Text != "")
             {
                
@@ -68,6 +69,11 @@ namespace autoResign
                     string studentIDTrimed = idArray[i].TrimEnd();
                     int result;
                     bool isNumber = int.TryParse(studentIDTrimed, out result);
+
+                    if (studentIDTrimed.Length != 8)
+                    {
+                        isNumber = false;
+                    }
                     if (isNumber)
                     {
                         studentID.Items.Add(studentIDTrimed);
@@ -80,17 +86,10 @@ namespace autoResign
                     }
                 }
 
-                for(k=0;k<notNumber.Length;k++)
+                notNumberCombined = string.Join("\n", notNumber);
+                if (notNumberCombined!="")
                 {
-                    if (notNumber[k] != null)
-                    {
-                        Console.WriteLine("index {0}: {1}",k,notNumber[k]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-
+                    MessageBox.Show(notNumberCombined);
                 }
 
                 numberID.Clear();
