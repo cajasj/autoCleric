@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.endDate = new System.Windows.Forms.TextBox();
             this.pass = new System.Windows.Forms.TextBox();
             this.logIn = new System.Windows.Forms.Button();
             this.userName = new System.Windows.Forms.TextBox();
@@ -42,7 +43,26 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.warningLabel = new System.Windows.Forms.Label();
+            this.testButton = new System.Windows.Forms.RadioButton();
+            this.YTDButton = new System.Windows.Forms.RadioButton();
+            this.excelButton = new System.Windows.Forms.RadioButton();
+            this.startDate = new System.Windows.Forms.TextBox();
+            this.studentID = new System.Windows.Forms.ListView();
+            this.ID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.fixRTC = new System.Windows.Forms.RadioButton();
+            this.numberID = new System.Windows.Forms.TextBox();
+            this.parseID = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
+            // 
+            // endDate
+            // 
+            this.endDate.Location = new System.Drawing.Point(266, 60);
+            this.endDate.Name = "endDate";
+            this.endDate.Size = new System.Drawing.Size(100, 20);
+            this.endDate.TabIndex = 9;
+            this.endDate.Visible = false;
             // 
             // pass
             // 
@@ -50,10 +70,10 @@
             this.pass.Name = "pass";
             this.pass.Size = new System.Drawing.Size(100, 20);
             this.pass.TabIndex = 0;
-            this.pass.TextChanged += new System.EventHandler(this.pass_TextChanged);
             // 
             // logIn
             // 
+            this.logIn.Enabled = false;
             this.logIn.Location = new System.Drawing.Point(536, 12);
             this.logIn.Name = "logIn";
             this.logIn.Size = new System.Drawing.Size(75, 23);
@@ -77,6 +97,7 @@
             this.filePath.TabIndex = 3;
             this.filePath.Text = "browse";
             this.filePath.UseVisualStyleBackColor = true;
+            this.filePath.Visible = false;
             this.filePath.Click += new System.EventHandler(this.filePath_Click);
             // 
             // pathName
@@ -86,15 +107,17 @@
             this.pathName.ReadOnly = true;
             this.pathName.Size = new System.Drawing.Size(505, 20);
             this.pathName.TabIndex = 4;
+            this.pathName.Visible = false;
             // 
             // parseExcel
             // 
-            this.parseExcel.Location = new System.Drawing.Point(536, 101);
+            this.parseExcel.Location = new System.Drawing.Point(536, 83);
             this.parseExcel.Name = "parseExcel";
             this.parseExcel.Size = new System.Drawing.Size(75, 23);
             this.parseExcel.TabIndex = 5;
             this.parseExcel.Text = "parse";
             this.parseExcel.UseVisualStyleBackColor = true;
+            this.parseExcel.Visible = false;
             this.parseExcel.Click += new System.EventHandler(this.parseExcel_Click);
             // 
             // parsedData
@@ -113,6 +136,7 @@
             this.parsedData.TabIndex = 6;
             this.parsedData.UseCompatibleStateImageBehavior = false;
             this.parsedData.View = System.Windows.Forms.View.Details;
+            this.parsedData.Visible = false;
             // 
             // columnHeader1
             // 
@@ -150,11 +174,137 @@
             this.warningLabel.Text = "Warning fail to log in requires the program to restart";
             this.warningLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // testButton
+            // 
+            this.testButton.AutoSize = true;
+            this.testButton.Checked = true;
+            this.testButton.Location = new System.Drawing.Point(536, 183);
+            this.testButton.Name = "testButton";
+            this.testButton.Size = new System.Drawing.Size(42, 17);
+            this.testButton.TabIndex = 8;
+            this.testButton.TabStop = true;
+            this.testButton.Text = "test";
+            this.testButton.UseVisualStyleBackColor = true;
+            this.testButton.CheckedChanged += new System.EventHandler(this.testButton_CheckedChanged);
+            // 
+            // YTDButton
+            // 
+            this.YTDButton.AutoSize = true;
+            this.YTDButton.Location = new System.Drawing.Point(536, 206);
+            this.YTDButton.Name = "YTDButton";
+            this.YTDButton.Size = new System.Drawing.Size(47, 17);
+            this.YTDButton.TabIndex = 8;
+            this.YTDButton.TabStop = true;
+            this.YTDButton.Text = "YTD";
+            this.YTDButton.UseVisualStyleBackColor = true;
+            this.YTDButton.CheckedChanged += new System.EventHandler(this.YTDButton_CheckedChanged);
+            // 
+            // excelButton
+            // 
+            this.excelButton.AutoSize = true;
+            this.excelButton.Location = new System.Drawing.Point(536, 229);
+            this.excelButton.Name = "excelButton";
+            this.excelButton.Size = new System.Drawing.Size(50, 17);
+            this.excelButton.TabIndex = 8;
+            this.excelButton.TabStop = true;
+            this.excelButton.Text = "excel";
+            this.excelButton.UseVisualStyleBackColor = true;
+            this.excelButton.CheckedChanged += new System.EventHandler(this.excelButton_CheckedChanged);
+            // 
+            // startDate
+            // 
+            this.startDate.Location = new System.Drawing.Point(70, 57);
+            this.startDate.Name = "startDate";
+            this.startDate.Size = new System.Drawing.Size(100, 20);
+            this.startDate.TabIndex = 9;
+            this.startDate.Visible = false;
+            // 
+            // studentID
+            // 
+            this.studentID.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.ID});
+            this.studentID.GridLines = true;
+            this.studentID.Location = new System.Drawing.Point(12, 83);
+            this.studentID.Name = "studentID";
+            this.studentID.Size = new System.Drawing.Size(145, 314);
+            this.studentID.TabIndex = 10;
+            this.studentID.UseCompatibleStateImageBehavior = false;
+            this.studentID.View = System.Windows.Forms.View.Details;
+            this.studentID.Visible = false;
+            // 
+            // ID
+            // 
+            this.ID.Text = "ID";
+            this.ID.Width = 143;
+            // 
+            // fixRTC
+            // 
+            this.fixRTC.AutoSize = true;
+            this.fixRTC.Location = new System.Drawing.Point(536, 253);
+            this.fixRTC.Name = "fixRTC";
+            this.fixRTC.Size = new System.Drawing.Size(63, 17);
+            this.fixRTC.TabIndex = 11;
+            this.fixRTC.TabStop = true;
+            this.fixRTC.Text = "RTC Fix";
+            this.fixRTC.UseVisualStyleBackColor = true;
+            this.fixRTC.CheckedChanged += new System.EventHandler(this.fixRTC_CheckedChanged);
+            // 
+            // numberID
+            // 
+            this.numberID.Location = new System.Drawing.Point(238, 83);
+            this.numberID.Multiline = true;
+            this.numberID.Name = "numberID";
+            this.numberID.Size = new System.Drawing.Size(100, 313);
+            this.numberID.TabIndex = 12;
+            this.numberID.Visible = false;
+            // 
+            // parseID
+            // 
+            this.parseID.Location = new System.Drawing.Point(536, 112);
+            this.parseID.Name = "parseID";
+            this.parseID.Size = new System.Drawing.Size(75, 23);
+            this.parseID.TabIndex = 13;
+            this.parseID.Text = "Add to List";
+            this.parseID.UseVisualStyleBackColor = true;
+            this.parseID.Visible = false;
+            this.parseID.Click += new System.EventHandler(this.parseID_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 60);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(55, 13);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Start Date";
+            this.label1.Visible = false;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(205, 59);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(52, 13);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "End Date";
+            this.label2.Visible = false;
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 408);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.parseID);
+            this.Controls.Add(this.numberID);
+            this.Controls.Add(this.fixRTC);
+            this.Controls.Add(this.studentID);
+            this.Controls.Add(this.endDate);
+            this.Controls.Add(this.startDate);
+            this.Controls.Add(this.excelButton);
+            this.Controls.Add(this.YTDButton);
+            this.Controls.Add(this.testButton);
             this.Controls.Add(this.warningLabel);
             this.Controls.Add(this.parsedData);
             this.Controls.Add(this.parseExcel);
@@ -165,7 +315,6 @@
             this.Controls.Add(this.pass);
             this.Name = "mainForm";
             this.Text = "main";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -187,6 +336,18 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.Label warningLabel;
+        private System.Windows.Forms.RadioButton testButton;
+        private System.Windows.Forms.RadioButton YTDButton;
+        private System.Windows.Forms.RadioButton excelButton;
+        private System.Windows.Forms.TextBox startDate;
+        private System.Windows.Forms.TextBox endDate;
+        private System.Windows.Forms.ListView studentID;
+        private System.Windows.Forms.ColumnHeader ID;
+        private System.Windows.Forms.RadioButton fixRTC;
+        private System.Windows.Forms.TextBox numberID;
+        private System.Windows.Forms.Button parseID;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
 

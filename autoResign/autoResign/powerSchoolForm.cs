@@ -19,7 +19,7 @@ namespace autoResign
         static AutoResetEvent autoResetEvent = new AutoResetEvent(false);
         Thread retryThread;
         Thread credInput;
-        Thread checkThread;
+        Thread checkThread; 
         public ChromiumWebBrowser chrome;
         public credentialInput retryInput;
         private string user = "";
@@ -30,7 +30,7 @@ namespace autoResign
         private bool loginSuccess = false;
         private bool foundLogOut = true;
         protected bool foundLogIn = true;
-
+        private string menu = "menu";
         const string checkLogOut = @"(function(){ " +
                      "if( document.getElementById('btnLogout')){" +
                      "  return true" +
@@ -38,18 +38,31 @@ namespace autoResign
                      "  return false" +
                      "} " +
                      "})();";
-        const string loopCustomScreens = @"(function(){" +
-                   "var frameMenu=window.frames['menu'];" +
-                   "var list = frameMenu.document.getElementById('tchr_custom_pages');" +
-                   "var listItem = list.getElementsByTagName('a');" +
-                   "var anchorText='Conversion Data';" +
-                   "for(var i =0; i<listItem.length; i++){ " +
-                        "if(listItem[i].text==anchorText){	" +
-                            "listItem[i].click();" +
-                            "break;" +
-                        "}" +
-                    "}" +
-                    "})();";
+
+     /*   const string loopCustomScreens = ("(function('menu'){" +
+                  "var frameMenu=window.frames['{0}'];" +
+                  "var list = frameMenu.document.getElementById('tchr_information');" +
+                  "var listItem = list.getElementsByTagName('a');" +
+                  "var anchorText='Security Settings';" +
+                  "for(var i =0; i<listItem.length; i++){ " +
+                       "if(listItem[i].text==anchorText){	" +
+                           "listItem[i].click();" +
+                           "break;" +
+                       "}" +
+                   "}" +
+                   "})();");*/
+        const string traverseTabs = @"(function(){" +
+                 "var frameMenu=window.frames['content'];" +
+                 "var tabItems = frameMenu.document.querySelectorAll('ul.tabs');" +
+                 "var tabList =tabItems[0].getElementsByTagName('a');" +
+                 "var tabText='Admin Access and Roles';" +
+                 "for(var i =0; i<tabList.length; i++){ " +
+                      "if(tabList[i].innerText==tabText){	" +
+                          "tabList[i].click();" +
+                          "break;" +
+                      "}" +
+                  "}" +
+                  "})();";
         const string checkTagDebug = @"(function(){ " +
                     "if( document.getElementById('tchr_custom_pages')){" +
                     "  return true" +
@@ -78,7 +91,7 @@ namespace autoResign
             Debug.WriteLine(user + " test load " + pass);
         }
 
-        public void initChrome()
+        protected virtual void initChrome()
         {
 
             CefSettings settings = new CefSettings();
@@ -88,7 +101,7 @@ namespace autoResign
             chrome.Dock = DockStyle.Fill;
 
         }
-        public void loadJS()
+        protected virtual void loadJS()
         {
             Console.WriteLine("line 80 found logout is anad login fail is " + foundLogOut + " " + foundLogIn);
 
@@ -120,29 +133,7 @@ namespace autoResign
                 }
             };
         }
-
-        private void powerSchoolForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Cef.Shutdown();
-            this.Dispose();
-        }
-
-        private void jsLogin(FrameLoadEndEventArgs args)
-        {
-            var autoUser = string.Format("document.getElementById('fieldUsername').value ='{0}';", this.user);
-            var autoPass = string.Format("document.getElementById('fieldPassword').value ='{0}';", this.pass);
-            var autologin = string.Format("document.getElementById('btnEnter').click();");
-
-            args.Frame.ExecuteJavaScriptAsync(autoUser);
-            args.Frame.ExecuteJavaScriptAsync(autoPass);
-            args.Frame.ExecuteJavaScriptAsync(autologin);
-
-            retryThread.Abort();
-
-        }
-        //studentSearchInput id for student input
-        //teacherSearchInput id for teacher input
-        private void loadCheckJS()
+        protected virtual void loadCheckJS()
         {
             chrome.FrameLoadEnd += (sender, args) =>
             {
@@ -150,36 +141,9 @@ namespace autoResign
                 {
                     checkThread = new Thread(() => checkLoginButton(checkLogOut));
                     checkThread.Start();
-                  ///  autoResetEvent.WaitOne();
+                    ///  autoResetEvent.WaitOne();
                 }
             };
-        }
-        private void searchTeacher()
-        {
-            chrome.FrameLoadEnd += (sender, args) =>
-            {
-                if (args.Frame.IsMain && loginSuccess==true)
-                {
-                    Console.WriteLine("\n\n\nin the search teacher function \n\n\n");
-                    autoSearch(args);
-                }
-            };
-        }
-        private void autoSearch(FrameLoadEndEventArgs args)
-        {
-            string fNameContains = "first_name contains ";
-            string lNameContains = " ; last_name contains ";
-            var fillTeacherField = string.Format("document.getElementById('teacherSearchInput').value ='{0}{1}{2}{3}';", fNameContains, " ",lNameContains," ");
-            var clickSearch= string.Format("document.getElementById('btnSearch').click();");
-            args.Frame.ExecuteJavaScriptAsync(fillTeacherField);
-            args.Frame.ExecuteJavaScriptAsync(clickSearch);
-            searchListItems(args);
-        }
-        private void searchListItems(FrameLoadEndEventArgs args)
-        {
-            args.Frame.ExecuteJavaScriptAsync(loopCustomScreens);
-
-
         }
         private void checkLoginButton(string checkArg)
         {
@@ -187,7 +151,7 @@ namespace autoResign
             bool localBool = false;
             chrome.EvaluateScriptAsync(checkArg).ContinueWith(t =>
             {
-                if (!t.IsFaulted && loginSuccess==false)
+                if (!t.IsFaulted && loginSuccess == false)
                 {
                     var response = t.Result;
                     if (response.Success && response.Result != null)
@@ -213,5 +177,57 @@ namespace autoResign
             Console.WriteLine("\n\n LINE 166 foundlogin is " + foundLogIn + " found logout is " + foundLogOut);
             checkThread.Abort();
         }
+        protected virtual void jsLogin(FrameLoadEndEventArgs args)
+        {
+            var autoUser = string.Format("document.getElementById('fieldUsername').value ='{0}';", this.user);
+            var autoPass = string.Format("document.getElementById('fieldPassword').value ='{0}';", this.pass);
+            var autologin = string.Format("document.getElementById('btnEnter').click();");
+
+            args.Frame.ExecuteJavaScriptAsync(autoUser);
+            args.Frame.ExecuteJavaScriptAsync(autoPass);
+            args.Frame.ExecuteJavaScriptAsync(autologin);
+
+            retryThread.Abort();
+
+        }
+
+        private void powerSchoolForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Cef.Shutdown();
+            this.Dispose();
+        }
+
+       
+        private void searchTeacher()
+        {
+            chrome.FrameLoadEnd += (sender, args) =>
+            {
+                if (args.Frame.IsMain && loginSuccess==true)
+                {
+                    Console.WriteLine("\n\n\nin the search teacher function \n\n\n");
+                    autoSearch(args);
+                }
+            };
+        }
+        private void autoSearch(FrameLoadEndEventArgs args)
+        {
+            string fNameContains = "first_name contains Jennifer";
+            string lNameContains = "; last_name contains Hale";
+            var fillTeacherField = string.Format("document.getElementById('teacherSearchInput').value ='{0}{1}';", fNameContains,lNameContains);
+            var clickSearch= string.Format("document.getElementById('btnSearch').click();");
+            args.Frame.ExecuteJavaScriptAsync(fillTeacherField);
+            args.Frame.ExecuteJavaScriptAsync(clickSearch);
+            searchListItems(args);
+        }
+        private void searchListItems(FrameLoadEndEventArgs args)
+        {
+           
+            //args.Frame.ExecuteJavaScriptAsync(loopCustomScreens);
+
+
+        }
+        //studentSearchInput id for student input
+        //teacherSearchInput id for teacher input
+     
     }
 }
