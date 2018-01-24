@@ -18,7 +18,9 @@ namespace autoResign
         public string[,] listViewData;
         public string checkedItem = "";
         public bool test = false;
-        
+        public string rtcString="";
+        public string excelString="";
+
         //var scriptTypes = new List<PowerSchool>();
         public mainForm()
         {
@@ -57,16 +59,13 @@ namespace autoResign
         {
             string multiLineID = numberID.Text;
             string [] idArray = multiLineID.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            string [] notNumber = new String [idArray.Length];
+            string [] notNumber = new string [idArray.Length];
             int k = 0;
-            string notNumberCombined;
             if (numberID.Text != "")
             {
-               
-                
-                for (int i = 0; i < idArray.Length; i++)
+                foreach (var id in idArray)
                 {
-                    string studentIDTrimed = idArray[i].TrimEnd();
+                    string studentIDTrimed = id.TrimEnd();
                     int result;
                     bool isNumber = int.TryParse(studentIDTrimed, out result);
 
@@ -76,6 +75,7 @@ namespace autoResign
                     }
                     if (isNumber)
                     {
+                        rtcString = studentIDTrimed;
                         studentID.Items.Add(studentIDTrimed);
                     }
                     else
@@ -86,7 +86,7 @@ namespace autoResign
                     }
                 }
 
-                notNumberCombined = string.Join("\n", notNumber);
+                var notNumberCombined = string.Join("\n", notNumber);
                 if (notNumberCombined!="")
                 {
                     MessageBox.Show(notNumberCombined);
@@ -98,6 +98,8 @@ namespace autoResign
             {
                 MessageBox.Show("enter a value");
             }
+            var checkIDListView = new CheckTextBox();
+            logIn.Enabled = checkIDListView.checkLine(rtcString);
         }
         private void parseExcel_Click(object sender, EventArgs e)
         {
@@ -110,38 +112,34 @@ namespace autoResign
             int colCount = parseRange.Columns.Count;
             string fullName = "";
             string lastName="";
-            string firstName = "";
-            string afterFirstColumn="";
             this.listViewData = new string [rowCount,rowCount];
-            ListViewItem dataTable;   
             for (int i = 2; i <= rowCount; i++)
             {
                 if (parseRange.Cells[i, 2] != null && parseRange.Cells[i, 2].Value2 != null)
                 {
                     fullName = parseRange.Cells[i, 2].Value2.ToString();
-                    firstName = fullName;
+                    var firstName = fullName;
                     parseName(ref lastName,ref firstName);
                     listViewData[i - 2, 0] = lastName;
                     listViewData[i - 2, 1] = firstName;
                     fullName = lastName + "," + firstName;
+                    excelString = fullName;
                 }
                      
-                    dataTable = new ListViewItem(fullName);
+                    var dataTable = new ListViewItem(fullName);
                     
                 for (int j = 3; j <= colCount; j++)
                 {
                     if (parseRange.Cells[i, j] != null && parseRange.Cells[i, j].Value2 != null)
                     {
-                        afterFirstColumn =parseRange.Cells[i, j].Value2.ToString();
-                        dataTable.SubItems.Add(afterFirstColumn);   
+                        string afterFirstColumn=parseRange.Cells[i, j].Value2.ToString();
+                        dataTable.SubItems.Add(afterFirstColumn);
                     }
                 }
                 parsedData.Items.Add(dataTable);
             }
             MessageBox.Show("all items has been added");
-                
-            filePath.Enabled = true;
-            parseExcel.Enabled = true;
+           
            
         }
 
@@ -150,12 +148,11 @@ namespace autoResign
 
         private void parseName(ref string last,ref string first)
         {
-            string[] firstLastSeparated=new string[3];
-            firstLastSeparated=first.Split(',');
+            var firstLastSeparated = first.Split(',');
             last = firstLastSeparated[0];
             first = firstLastSeparated[1];
-            string whiteSpace = " ";
-            Regex whiteSpaceCheck = new Regex(whiteSpace);
+            const string whiteSpace = " ";
+            var whiteSpaceCheck = new Regex(whiteSpace);
             while(first.IndexOf(whiteSpace)==0)
             {
                 first = first.Substring(1, first.Length-1);
@@ -171,6 +168,7 @@ namespace autoResign
        
         /// <summary>
         /// radio button if checked makes thing in/visible
+        /// check if boxes are empty
         /// </summary>
         private void excelButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -225,6 +223,8 @@ namespace autoResign
                 studentID.Visible = true;
                 numberID.Visible = true;
                 parseID.Visible = true;
+                var checkIDListView = new CheckTextBox();
+                logIn.Enabled = checkIDListView.checkLine(rtcString);
             }
             else
             {
@@ -234,6 +234,47 @@ namespace autoResign
             }
         }
 
-      
+        private void endDate_TextChanged(object sender, EventArgs e)
+        {
+            var start = new CheckTextBox();
+            logIn.Enabled = start.CheckEmpty(startDate.Text, endDate.Text);
+        }
+
+
+        private void startDate_TextChanged(object sender, EventArgs e)
+        {
+            var start = new CheckTextBox();
+            logIn.Enabled = start.CheckEmpty(startDate.Text, endDate.Text);
+        }
+
+        private void userName_TextChanged(object sender, EventArgs e)
+        {
+            var name = new CheckTextBox();
+            logIn.Enabled = name.CheckEmpty(userName.Text, pass.Text);
+        }
+
+        private void pass_TextChanged(object sender, EventArgs e)
+        {
+            var name = new CheckTextBox();
+            logIn.Enabled = name.CheckEmpty(userName.Text, pass.Text);
+        }
+
+        private void pathName_TextChanged(object sender, EventArgs e)
+        {
+            var checkPath = new CheckTextBox();
+            parseExcel.Enabled = checkPath.checkLine(pathName.Text);
+        }
+
+        private void studentID_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var checkIDListView= new CheckTextBox();
+            logIn.Enabled = checkIDListView.checkLine(rtcString);
+        }
+
+        private void parsedData_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var checkExcelListView=new CheckTextBox();
+            logIn.Enabled = checkExcelListView.checkLine(excelString);
+        }
     }
 }

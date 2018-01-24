@@ -63,6 +63,7 @@
             this.endDate.Size = new System.Drawing.Size(100, 20);
             this.endDate.TabIndex = 9;
             this.endDate.Visible = false;
+            this.endDate.TextChanged += new System.EventHandler(this.endDate_TextChanged);
             // 
             // pass
             // 
@@ -70,6 +71,7 @@
             this.pass.Name = "pass";
             this.pass.Size = new System.Drawing.Size(100, 20);
             this.pass.TabIndex = 0;
+            this.pass.TextChanged += new System.EventHandler(this.pass_TextChanged);
             // 
             // logIn
             // 
@@ -88,6 +90,7 @@
             this.userName.Name = "userName";
             this.userName.Size = new System.Drawing.Size(100, 20);
             this.userName.TabIndex = 0;
+            this.userName.TextChanged += new System.EventHandler(this.userName_TextChanged);
             // 
             // filePath
             // 
@@ -108,6 +111,7 @@
             this.pathName.Size = new System.Drawing.Size(505, 20);
             this.pathName.TabIndex = 4;
             this.pathName.Visible = false;
+            this.pathName.TextChanged += new System.EventHandler(this.pathName_TextChanged);
             // 
             // parseExcel
             // 
@@ -137,6 +141,7 @@
             this.parsedData.UseCompatibleStateImageBehavior = false;
             this.parsedData.View = System.Windows.Forms.View.Details;
             this.parsedData.Visible = false;
+            this.parsedData.SelectedIndexChanged += new System.EventHandler(this.parsedData_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -177,12 +182,10 @@
             // testButton
             // 
             this.testButton.AutoSize = true;
-            this.testButton.Checked = true;
             this.testButton.Location = new System.Drawing.Point(536, 183);
             this.testButton.Name = "testButton";
             this.testButton.Size = new System.Drawing.Size(42, 17);
             this.testButton.TabIndex = 8;
-            this.testButton.TabStop = true;
             this.testButton.Text = "test";
             this.testButton.UseVisualStyleBackColor = true;
             this.testButton.CheckedChanged += new System.EventHandler(this.testButton_CheckedChanged);
@@ -218,6 +221,7 @@
             this.startDate.Size = new System.Drawing.Size(100, 20);
             this.startDate.TabIndex = 9;
             this.startDate.Visible = false;
+            this.startDate.TextChanged += new System.EventHandler(this.startDate_TextChanged);
             // 
             // studentID
             // 
@@ -231,6 +235,7 @@
             this.studentID.UseCompatibleStateImageBehavior = false;
             this.studentID.View = System.Windows.Forms.View.Details;
             this.studentID.Visible = false;
+            this.studentID.SelectedIndexChanged += new System.EventHandler(this.studentID_SelectedIndexChanged);
             // 
             // ID
             // 
