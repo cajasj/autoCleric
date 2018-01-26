@@ -20,27 +20,13 @@ namespace autoResign
             userName = name;
             userPass = logPass;
 
-            initChrome();
-            base.loadJS(userName, userPass,chrome);
-            base.loadCheckJS(chrome);
+            base.initChrome();
+            base.loadJS(userName, userPass);
+            base.loadCheckJS();
             ShowDialog();
-           
+           Console.WriteLine("after showdialog");
             
         }
-        public void initChrome()
-        {
-            Console.WriteLine("inititalize chrome in class");
-            CefSettings settings = new CefSettings();
-            Cef.Initialize(settings);
-            Console.WriteLine(chrome);
-            Console.WriteLine(url);
-            chrome = new ChromiumWebBrowser(url);
-            
-            Controls.Add(chrome);
-            chrome.Dock = DockStyle.Fill;
-
-        }
-     
 
     }
 }

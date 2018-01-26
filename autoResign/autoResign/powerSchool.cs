@@ -17,22 +17,21 @@ namespace autoResign
     public partial class powerSchool : Form
     {
         static AutoResetEvent autoResetEvent = new AutoResetEvent(false);
-        protected Thread retryThread;
-        protected Thread credInput;
-        protected Thread checkThread;
+        Thread retryThread;
+        Thread credInput;
+        Thread checkThread;
         protected ChromiumWebBrowser chrome;
         public credentialInput retryInput;
-        protected string user = "";
-        protected string pass = "";
+        private string user = "";
+        private string pass = "";
         private string url = "https://bridgeportedu.powerschool.com/admin/home.html";
-        protected string staffURL = "https://bridgeportedu.powerschool.com/admin/faculty/search.html";
-        protected int count = 0;
-        protected bool loginSuccess = false;
-        protected bool foundLogOut = true;
+        private string staffURL = "https://bridgeportedu.powerschool.com/admin/faculty/search.html";
+        private int count = 0;
+        private bool loginSuccess = false;
+        private bool foundLogOut = true;
         protected bool foundLogIn = true;
         private string menu = "menu";
-
-        protected const string checkLogOut = @"(function(){ " +
+        const string checkLogOut = @"(function(){ " +
                      "if( document.getElementById('btnLogout')){" +
                      "  return true" +
                      "}else {" +
@@ -77,10 +76,10 @@ namespace autoResign
 
             user = uName;
             pass = uPass;
-            initChrome(chrome);
+            initChrome();
             Console.WriteLine("line 56 found logout is anad login fail is " + foundLogOut + " " + foundLogIn);
-            //loadJS(user, pass);
-            //loadCheckJS();
+            loadJS(user, pass);
+            loadCheckJS();
             searchTeacher();
             Console.WriteLine("line 60 foundlog out is false and foundin is " + foundLogIn);
 
@@ -99,27 +98,24 @@ namespace autoResign
             Debug.WriteLine(user + " test load " + pass);
         }
 
-        public void initChrome(ChromiumWebBrowser test)
+        public void initChrome()
         {
-             Console.WriteLine("inititalize chrome");
+           
+            Console.WriteLine("inititalize chrome");
             CefSettings settings = new CefSettings();
             Cef.Initialize(settings);
-            Console.WriteLine(test);
-            Console.WriteLine(url);
-            test = new ChromiumWebBrowser(url);
-            Console.WriteLine(test);
-            Console.WriteLine(test);
-            Controls.Add(test);
-            test.Dock = DockStyle.Fill;
+            chrome = new ChromiumWebBrowser(url);
+            Console.WriteLine(chrome);
+            Controls.Add(chrome);
+            chrome.Dock = DockStyle.Fill;
 
         }
 
-        protected virtual void loadJS(string userText, string passText,ChromiumWebBrowser chrome)
+        public virtual void loadJS(string userText, string passText)
         {
-            var classChrome = chrome;
             Console.WriteLine("line 80 found logout is anad login fail is " + foundLogOut + " " + foundLogIn);
 
-            classChrome.FrameLoadEnd += (sender, args) =>
+            chrome.FrameLoadEnd += (sender, args) =>
             {
 
                 Console.WriteLine("LINE 84foundlogin before frame load " + foundLogIn);
@@ -147,24 +143,23 @@ namespace autoResign
                 }
             };
         }
-        protected virtual void loadCheckJS(ChromiumWebBrowser chrome)
+        protected virtual void loadCheckJS()
         {
-            var classChrome = chrome;
-            classChrome.FrameLoadEnd += (sender, args) =>
+            chrome.FrameLoadEnd += (sender, args) =>
             {
                 if (args.Frame.IsMain)
                 {
-                    checkThread = new Thread(() => checkLoginButton(checkLogOut,classChrome));
+                    checkThread = new Thread(() => checkLoginButton(checkLogOut));
                     checkThread.Start();
                     ///  autoResetEvent.WaitOne();
                 }
             };
         }
-        private void checkLoginButton(string checkArg,ChromiumWebBrowser childChrome)
+        private void checkLoginButton(string checkArg)
         {
-            var chromeCheck = childChrome;
+
             bool localBool = false;
-            chromeCheck.EvaluateScriptAsync(checkArg).ContinueWith(t =>
+            chrome.EvaluateScriptAsync(checkArg).ContinueWith(t =>
             {
                 if (!t.IsFaulted && loginSuccess == false)
                 {
@@ -182,7 +177,7 @@ namespace autoResign
                         {
                             Console.WriteLine("where found in false found out true");
                             loginSuccess = true;
-                            chromeCheck.Load(staffURL);
+                            chrome.Load(staffURL);
                         }
                         //autoResetEvent.Set();
                     }
