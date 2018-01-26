@@ -1,6 +1,6 @@
 ﻿namespace autoResign
 {
-    sealed partial class powerSchoolForm
+    partial class powerSchool
     {
         /// <summary>
         /// Required designer variable.
@@ -31,19 +31,14 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            // 
-            // powerSchoolForm
+            // powerSchool
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(911, 523);
-            this.Name = "powerSchoolForm";
-            this.Text = "powerSchoolForm";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.powerSchoolForm_FormClosing);
-            this.Load += new System.EventHandler(this.powerSchoolForm_Load);
+            this.ClientSize = new System.Drawing.Size(914, 444);
+            this.Name = "powerSchool";
+            this.Text = "powerSchool";
+            this.Load += new System.EventHandler(this.powerSchool_Load_1);
             this.ResumeLayout(false);
 
         }

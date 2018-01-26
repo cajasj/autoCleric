@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="callPowerSchool.cs" />
     <Compile Include="CheckTextBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,6 +84,12 @@
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="powerSchool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="powerSchool.Designer.cs">
+      <DependentUpon>powerSchool.cs</DependentUpon>
     </Compile>
     <Compile Include="powerSchoolForm.cs">
       <SubType>Form</SubType>
@@ -100,6 +107,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="powerSchool.resx">
+      <DependentUpon>powerSchool.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="powerSchoolForm.resx">
       <DependentUpon>powerSchoolForm.cs</DependentUpon>

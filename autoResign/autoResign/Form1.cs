@@ -20,8 +20,8 @@ namespace autoResign
         public bool test = false;
         public string rtcString="";
         public string excelString="";
-
-        //var scriptTypes = new List<PowerSchool>();
+        private object objectHolder;
+        public List<powerSchool> scriptPass = new List<powerSchool>();
         public mainForm()
         {
             InitializeComponent();
@@ -37,10 +37,14 @@ namespace autoResign
            
             logName = userName.Text;
             userPass = pass.Text;
-                    
-            powerSchoolForm admin = new powerSchoolForm(logName, userPass);
             this.Hide();
-            admin.ShowDialog();
+            //powerSchoolForm admin = new powerSchoolForm(logName, userPass);
+            var admin = new callPowerSchool();
+            //powerSchoolForm admin = new powerSchoolForm( logName, userPass);
+            admin.enterSite(scriptPass, logName, userPass);
+//            var formActivate = new powerSchoolForm();
+//            formActivate.ShowDialog();
+            
             MessageBox.Show("session now over");
             this.Dispose();
         }
@@ -174,7 +178,7 @@ namespace autoResign
         {
             if (excelButton.Checked)
             {
-                
+                scriptPass.Clear();
                 var checkPath = new CheckTextBox();
                 logIn.Enabled = checkPath.checkLine(pathName.Text);
                 parsedData.Visible = true;
@@ -195,6 +199,7 @@ namespace autoResign
         {
             if (YTDButton.Checked)
             {
+                scriptPass.Clear();
                 startDate.Visible = true;
                 endDate.Visible = true;
                 var start = new CheckTextBox();
@@ -210,6 +215,7 @@ namespace autoResign
 
         private void testButton_CheckedChanged(object sender, EventArgs e)
         {
+            scriptPass.Clear();
             var name = new CheckTextBox();
             logIn.Enabled = name.CheckEmpty(userName.Text, pass.Text);
         }
@@ -220,6 +226,9 @@ namespace autoResign
 
             if (fixRTC.Checked)
             {
+                scriptPass.Clear();
+                scriptPass.Add(new StudentRTC());
+                Console.WriteLine(scriptPass.ElementAt(0));
                 studentID.Visible = true;
                 numberID.Visible = true;
                 parseID.Visible = true;
@@ -256,6 +265,7 @@ namespace autoResign
         private void pass_TextChanged(object sender, EventArgs e)
         {
             var name = new CheckTextBox();
+            pass.PasswordChar = '*';
             logIn.Enabled = name.CheckEmpty(userName.Text, pass.Text);
         }
 

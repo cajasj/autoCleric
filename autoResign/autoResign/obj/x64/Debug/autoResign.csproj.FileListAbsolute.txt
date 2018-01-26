@@ -40,3 +40,4 @@ C:\localDoc\dataManagement\c#\automateResignations\autoResign\autoResign\autoRes
 C:\localDoc\dataManagement\c#\automateResignations\autoResign\autoResign\autoResign\bin\x64\Debug\autoResign.pdb
 C:\localDoc\dataManagement\c#\automateResignations\autoResign\autoResign\autoResign\obj\x64\Debug\autoResign.csproj.ResolveComReference.cache
 C:\localDoc\dataManagement\c#\automateResignations\autoResign\autoResign\autoResign\obj\x64\Debug\autoResign.credentialInput.resources
+C:\localDoc\dataManagement\c#\automateResignations\autoResign\autoResign\autoResign\obj\x64\Debug\autoResign.powerSchool.resources
