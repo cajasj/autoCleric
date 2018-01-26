@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace autoResign
 {
-    public partial class powerSchool : Form
+    public partial class powerSchool : mainForm
     {
         static AutoResetEvent autoResetEvent = new AutoResetEvent(false);
         Thread retryThread;
@@ -75,7 +75,10 @@ namespace autoResign
         {
 
             user = uName;
-            pass = uPass;
+            var pass = uPass;
+
+        
+
             initChrome();
             Console.WriteLine("line 56 found logout is anad login fail is " + foundLogOut + " " + foundLogIn);
             loadJS(user, pass);

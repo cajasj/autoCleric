@@ -20,7 +20,7 @@ namespace autoResign
         public bool test = false;
         public string rtcString="";
         public string excelString="";
-        private object objectHolder;
+        public List<string> idCorrectFormat= new List<string>();
         public List<powerSchool> scriptPass = new List<powerSchool>();
         public mainForm()
         {
@@ -36,14 +36,12 @@ namespace autoResign
         {
            
             logName = userName.Text;
-            userPass = pass.Text;
+            userPass = passText.Text;
+
             this.Hide();
-            //powerSchoolForm admin = new powerSchoolForm(logName, userPass);
+           
             var admin = new callPowerSchool();
-            //powerSchoolForm admin = new powerSchoolForm( logName, userPass);
             admin.enterSite(scriptPass, logName, userPass);
-//            var formActivate = new powerSchoolForm();
-//            formActivate.ShowDialog();
             
             MessageBox.Show("session now over");
             this.Dispose();
@@ -64,6 +62,7 @@ namespace autoResign
             string multiLineID = numberID.Text;
             string [] idArray = multiLineID.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             string [] notNumber = new string [idArray.Length];
+            
             int k = 0;
             if (numberID.Text != "")
             {
@@ -79,6 +78,7 @@ namespace autoResign
                     }
                     if (isNumber)
                     {
+                        idCorrectFormat.Add(studentIDTrimed);
                         rtcString = studentIDTrimed;
                         studentID.Items.Add(studentIDTrimed);
                     }
@@ -91,7 +91,14 @@ namespace autoResign
                 }
 
                 var notNumberCombined = string.Join("\n", notNumber);
+                const string pageBreak = "\n";
+                if (notNumberCombined[0] == '\n')
+                {
+                    notNumberCombined = Regex.Replace(notNumberCombined, pageBreak, "");
+                }
+
                 if (notNumberCombined!="")
+
                 {
                     MessageBox.Show(notNumberCombined);
                 }
@@ -217,7 +224,7 @@ namespace autoResign
         {
             scriptPass.Clear();
             var name = new CheckTextBox();
-            logIn.Enabled = name.CheckEmpty(userName.Text, pass.Text);
+            logIn.Enabled = name.CheckEmpty(userName.Text, passText.Text);
         }
 
 
@@ -259,14 +266,14 @@ namespace autoResign
         private void userName_TextChanged(object sender, EventArgs e)
         {
             var name = new CheckTextBox();
-            logIn.Enabled = name.CheckEmpty(userName.Text, pass.Text);
+            logIn.Enabled = name.CheckEmpty(userName.Text, passText.Text);
         }
 
         private void pass_TextChanged(object sender, EventArgs e)
         {
             var name = new CheckTextBox();
-            pass.PasswordChar = '*';
-            logIn.Enabled = name.CheckEmpty(userName.Text, pass.Text);
+            passText.PasswordChar = '*';
+            logIn.Enabled = name.CheckEmpty(userName.Text, passText.Text);
         }
 
         private void pathName_TextChanged(object sender, EventArgs e)

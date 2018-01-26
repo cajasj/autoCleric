@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.endDate = new System.Windows.Forms.TextBox();
-            this.pass = new System.Windows.Forms.TextBox();
+            this.passText = new System.Windows.Forms.TextBox();
             this.logIn = new System.Windows.Forms.Button();
             this.userName = new System.Windows.Forms.TextBox();
             this.filePath = new System.Windows.Forms.Button();
@@ -65,13 +65,13 @@
             this.endDate.Visible = false;
             this.endDate.TextChanged += new System.EventHandler(this.endDate_TextChanged);
             // 
-            // pass
+            // passText
             // 
-            this.pass.Location = new System.Drawing.Point(238, 15);
-            this.pass.Name = "pass";
-            this.pass.Size = new System.Drawing.Size(100, 20);
-            this.pass.TabIndex = 0;
-            this.pass.TextChanged += new System.EventHandler(this.pass_TextChanged);
+            this.passText.Location = new System.Drawing.Point(238, 15);
+            this.passText.Name = "passText";
+            this.passText.Size = new System.Drawing.Size(100, 20);
+            this.passText.TabIndex = 0;
+            this.passText.TextChanged += new System.EventHandler(this.pass_TextChanged);
             // 
             // logIn
             // 
@@ -317,7 +317,7 @@
             this.Controls.Add(this.filePath);
             this.Controls.Add(this.logIn);
             this.Controls.Add(this.userName);
-            this.Controls.Add(this.pass);
+            this.Controls.Add(this.passText);
             this.Name = "mainForm";
             this.Text = "main";
             this.ResumeLayout(false);
@@ -327,32 +327,32 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox pass;
-        private System.Windows.Forms.Button logIn;
-        private System.Windows.Forms.TextBox userName;
-        private System.Windows.Forms.Button filePath;
-        private System.Windows.Forms.TextBox pathName;
-        private System.Windows.Forms.Button parseExcel;
-        private System.Windows.Forms.ListView parsedData;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
-        private System.Windows.Forms.ColumnHeader columnHeader4;
-        private System.Windows.Forms.ColumnHeader columnHeader5;
-        private System.Windows.Forms.ColumnHeader columnHeader6;
-        private System.Windows.Forms.Label warningLabel;
-        private System.Windows.Forms.RadioButton testButton;
-        private System.Windows.Forms.RadioButton YTDButton;
-        private System.Windows.Forms.RadioButton excelButton;
-        private System.Windows.Forms.TextBox startDate;
-        private System.Windows.Forms.TextBox endDate;
-        private System.Windows.Forms.ListView studentID;
-        private System.Windows.Forms.ColumnHeader ID;
-        private System.Windows.Forms.RadioButton fixRTC;
-        private System.Windows.Forms.TextBox numberID;
-        private System.Windows.Forms.Button parseID;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        protected System.Windows.Forms.TextBox passText;
+        protected System.Windows.Forms.Button logIn;
+        protected System.Windows.Forms.TextBox userName;
+        protected System.Windows.Forms.Button filePath;
+        protected System.Windows.Forms.TextBox pathName;
+        protected System.Windows.Forms.Button parseExcel;
+        protected System.Windows.Forms.ListView parsedData;
+        protected System.Windows.Forms.ColumnHeader columnHeader1;
+        protected System.Windows.Forms.ColumnHeader columnHeader2;
+        protected System.Windows.Forms.ColumnHeader columnHeader3;
+        protected System.Windows.Forms.ColumnHeader columnHeader4;
+        protected System.Windows.Forms.ColumnHeader columnHeader5;
+        protected System.Windows.Forms.ColumnHeader columnHeader6;
+        protected System.Windows.Forms.Label warningLabel;
+        protected System.Windows.Forms.RadioButton testButton;
+        protected System.Windows.Forms.RadioButton YTDButton;
+        protected System.Windows.Forms.RadioButton excelButton;
+        protected System.Windows.Forms.TextBox startDate;
+        protected System.Windows.Forms.TextBox endDate;
+        protected System.Windows.Forms.ListView studentID;
+        protected System.Windows.Forms.ColumnHeader ID;
+        protected System.Windows.Forms.RadioButton fixRTC;
+        protected System.Windows.Forms.TextBox numberID;
+        protected System.Windows.Forms.Button parseID;
+        protected System.Windows.Forms.Label label1;
+        protected System.Windows.Forms.Label label2;
     }
 }
 

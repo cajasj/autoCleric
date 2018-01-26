@@ -12,20 +12,24 @@ namespace autoResign
     {
 
         ChromiumWebBrowser chrome;
-        private string userName = "";
+        private string userNameLog = "";
         private string userPass = "";
         private string url = "https://bridgeportedu.powerschool.com/admin/home.html";
         public override void loginUser(string name, string logPass)
         {
-            userName = name;
+            userNameLog = name;
             userPass = logPass;
-
+            foreach (Control c in Controls)
+            {
+                c.Visible = false;
+            }
             base.initChrome();
-            base.loadJS(userName, userPass);
+            base.loadJS(userNameLog, userPass);
             base.loadCheckJS();
+
+            Console.WriteLine("id input {0} ",idCorrectFormat.Count);
             ShowDialog();
            Console.WriteLine("after showdialog");
-            
         }
 
     }
