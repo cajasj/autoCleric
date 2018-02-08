@@ -91,12 +91,6 @@
     <Compile Include="powerSchool.Designer.cs">
       <DependentUpon>powerSchool.cs</DependentUpon>
     </Compile>
-    <Compile Include="powerSchoolForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="powerSchoolForm.Designer.cs">
-      <DependentUpon>powerSchoolForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StudentRTC.cs">
@@ -110,9 +104,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="powerSchool.resx">
       <DependentUpon>powerSchool.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="powerSchoolForm.resx">
-      <DependentUpon>powerSchoolForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

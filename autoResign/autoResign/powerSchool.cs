@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace autoResign
 {
-    public partial class powerSchool : mainForm
+    public partial class powerSchool : Form
     {
         static AutoResetEvent autoResetEvent = new AutoResetEvent(false);
         Thread retryThread;
@@ -80,11 +80,9 @@ namespace autoResign
         
 
             initChrome();
-            Console.WriteLine("line 56 found logout is anad login fail is " + foundLogOut + " " + foundLogIn);
             loadJS(user, pass);
             loadCheckJS();
             searchTeacher();
-            Console.WriteLine("line 60 foundlog out is false and foundin is " + foundLogIn);
 
         }
 
@@ -92,9 +90,7 @@ namespace autoResign
         {
 
             InitializeComponent(); 
-            //            Console.WriteLine(scriptPass.ElementAt(0));
-            //            var objectType = scriptPass.ElementAt(0);
-            //            objectType.loginUser(name,logPass);
+         
         }
         private void powerSchool_Load(object sender, EventArgs e)
         {
@@ -108,7 +104,6 @@ namespace autoResign
             CefSettings settings = new CefSettings();
             Cef.Initialize(settings);
             chrome = new ChromiumWebBrowser(url);
-            Console.WriteLine(chrome);
             Controls.Add(chrome);
             chrome.Dock = DockStyle.Fill;
 
@@ -116,18 +111,15 @@ namespace autoResign
 
         public virtual void loadJS(string userText, string passText)
         {
-            Console.WriteLine("line 80 found logout is anad login fail is " + foundLogOut + " " + foundLogIn);
 
             chrome.FrameLoadEnd += (sender, args) =>
             {
-
-                Console.WriteLine("LINE 84foundlogin before frame load " + foundLogIn);
+                
                 if (args.Frame.IsMain && loginSuccess == false)
                 {
                     if (foundLogOut == false)
                     {
-
-                        Console.WriteLine("\n\n LINE 105 before the message box show \n\n");
+                        
                         MessageBox.Show("wrong credential please enter again");
                         retryInput = new credentialInput();
                         credInput = new Thread(() => retryInput.ShowDialog());
@@ -135,13 +127,10 @@ namespace autoResign
                         while (credInput.IsAlive) ;
                         userText = retryInput.getName;
                         passText = retryInput.getPass;
-                        Console.WriteLine(user + " using properties " + pass);
-                        Console.WriteLine("count is " + count);
 
                     }
                     retryThread = new Thread(() => jsLogin(args, userText, passText));
                     retryThread.Start();
-                    Console.WriteLine("count is " + count);
                     while (retryThread.IsAlive) ;
                 }
             };
@@ -170,7 +159,6 @@ namespace autoResign
                     if (response.Success && response.Result != null)
                     {
                         localBool = (bool)response.Result;
-                        Console.WriteLine("\n\n LINE 162 local bool in if statement is " + localBool);
 
 
                         foundLogOut = localBool;
@@ -178,16 +166,13 @@ namespace autoResign
 
                         if (foundLogIn == false && foundLogOut == true)
                         {
-                            Console.WriteLine("where found in false found out true");
                             loginSuccess = true;
                             chrome.Load(staffURL);
                         }
                         //autoResetEvent.Set();
                     }
-                    Console.WriteLine("response success and resut " + response.Success + " " + response.Result);
                 }
             });
-            Console.WriteLine("\n\n LINE 166 foundlogin is " + foundLogIn + " found logout is " + foundLogOut);
             checkThread.Abort();
         }
         protected virtual void jsLogin(FrameLoadEndEventArgs args, string logUser, string logPass)
@@ -217,7 +202,6 @@ namespace autoResign
             {
                 if (args.Frame.IsMain && loginSuccess == true)
                 {
-                    Console.WriteLine("\n\n\nin the search teacher function \n\n\n");
                     autoSearch(args);
                 }
             };

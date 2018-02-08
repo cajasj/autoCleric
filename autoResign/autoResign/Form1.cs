@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -22,10 +24,14 @@ namespace autoResign
         public string excelString="";
         public List<string> idCorrectFormat= new List<string>();
         public List<powerSchool> scriptPass = new List<powerSchool>();
+        public string[] idRay;
+        public string path;
         public mainForm()
         {
             InitializeComponent();
             parseExcel.Enabled = false;
+            path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)+@"\idList.txt";
+       
         }
         
 
@@ -34,11 +40,21 @@ namespace autoResign
         /// </summary>
         private void logIn_Click(object sender, EventArgs e)
         {
-           
+            //File.WriteAllText(path + @"\idList.txt", String.Empty);
+            using (StreamWriter sIDText = new StreamWriter(path, true))
+            {
+                foreach (string sID in idCorrectFormat)
+                {
+                    sIDText.WriteLine(sID);
+                    Console.WriteLine("id {0} ", sID);
+                   
+                }
+            };
+            
             logName = userName.Text;
-            userPass = passText.Text;
-
+            userPass = passText.Text; 
             this.Hide();
+            Console.WriteLine("id list path is {0}",path); 
            
             var admin = new callPowerSchool();
             admin.enterSite(scriptPass, logName, userPass);
@@ -88,11 +104,11 @@ namespace autoResign
                         k++;
                         
                     }
-                }
-
+                } 
+               
                 var notNumberCombined = string.Join("\n", notNumber);
                 const string pageBreak = "\n";
-                if (notNumberCombined[0] == '\n')
+                if (notNumberCombined=="" || notNumberCombined[0] == '\n')
                 {
                     notNumberCombined = Regex.Replace(notNumberCombined, pageBreak, "");
                 }
@@ -111,6 +127,7 @@ namespace autoResign
             }
             var checkIDListView = new CheckTextBox();
             logIn.Enabled = checkIDListView.checkLine(rtcString);
+   
         }
         private void parseExcel_Click(object sender, EventArgs e)
         {

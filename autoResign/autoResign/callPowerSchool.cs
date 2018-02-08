@@ -9,8 +9,9 @@ namespace autoResign
     {
         public void enterSite(List<powerSchool> scriptPass, string logName, string userPass)
         {
+            Console.WriteLine("object is {0}", scriptPass.ElementAt(0));
             scriptPass.ElementAt(0).loginUser(logName,userPass);
-           
+           Console.WriteLine("call powerschool class");
         }
     }
 }
