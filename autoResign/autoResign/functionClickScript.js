@@ -114,7 +114,7 @@ var multiSelectLink=frameContent.document.getElementsByClassName(multiSelectClas
 console.log(multiSelectLink);
 multiSelectLink[0].click();
 var multiSelectID="multiSelVals"
-var multiSelect=frameContent.document.getElementById(multiSelectID);
+var multiSelect=document.getElementById(multiSelectID);
 console.log(multiSelect);
 var idArray=[]
 multiSelect.value="";
@@ -122,12 +122,12 @@ multiSelect.value+=idArray[0];
 for(var i=1;i<idArray.length;i++){
   multiSelect.value+=idArray[i];
 }
-
+document.getElementById("fldName").value="statenumber"
 
 var multiSelectClass="dialogDivM"
 var frameContent=window.frames["content"];
 ///script for search
-var searchButtonClass = frameContent.document.getElementsByClassName("button-row")[2];
+var searchButtonClass = document.getElementsByClassName("button-row")[2];
 var clickSearchButton =searchButtonClass.children[0];
 clickSearchButton.click();
 var searchButtonTag = searchButtonClass.document.getElementsByTagName("button");
@@ -162,3 +162,132 @@ for(i=0;i<length;i++){
 ///remove when false pass in to another constructor
 ///
 
+
+
+go to each student in student transfer 
+looking for same day or reverse 
+x means 2 or more overlapping dates
+scripts compare all the current dates to see if they overlap and hope to god they a date format in js
+js date stufff
+so plan is scrape 2 dates check if it's the same use js date built in function
+
+
+foreach(tr in document getelement){
+
+latestDate= new Date(getelementbyclass);
+latestMonth =latestDate.getMonth()+1;
+latestDay = latestDate.getDate();
+latestShortDate = latestMonth+latestday
+
+earlyDate = new Date(document.getelementbyClass)
+earlyMotnh = earlyDate.getMotnh()+1
+earlyDay=earlyDay.getDate();
+earlyShortDate = earlymonth+earlyDay
+
+checkReverse(earlydate)
+if(early&&latestshortdate =aug31){
+	function()
+}else{
+	function(lateshort early short)
+}
+
+
+////////////////////////////
+checkReverse(earlydate){
+exit = earlydate
+entry = getelement
+combined =entry -exit
+if combined <0
+	click entrydate change transfer info
+}
+function(lateshort early short)
+	{
+
+	if(latestshort == earlyshort){
+		click entrydate
+		click on transferinfo
+
+	}else{
+	latestshort=earlyshort
+
+	}
+
+}
+changeBothdatesfunction(){
+
+}
+var boxRound="box-round";
+ var frameMenu=window.frames["frameContent"];
+var tableBody =frameMenu.getElementsByClassName(boxRound);
+console.log(tableBody.getElementsByTagName("tr"));
+
+
+var subStringPlacement=[0,10,14,25];
+var frameContent=window.frames["content"];
+var lateRow = frameContent.document.getElementsByTagName("tr");
+var earlyRow = frameContent.document.querySelectorAll("tr.oddRow");
+var rowIndex=0;
+var numberOfRows= earlyRow.length-1;
+
+var latestEntry =lateRow[2].innerText;
+var latestExit = latestEntry;
+latestEntry= latestEntry.substring(subStringPlacement[0],subStringPlacement[1]);
+
+var earlierEntry = earlyRow[0].innerText;
+var earlierExit = earlierEntry;
+earlierEntry = earlierEntry.substring(subStringPlacement[0],subStringPlacement[1]);
+latestEntry = latestEntry.substring(subStringPlacement[0],subStringPlacement[1]);
+
+findBackSlash(latestExit);
+latestExit=latestExit.substring(subStringPlacement[2],subStringPlacement[3]);
+findBackSlash(earlierExit);
+earlierExit=earlierExit.substring(subStringPlacement[2],subStringPlacement[3]);
+
+checkEntryExit(latestEntry,earlierExit)
+
+for(var x=1;x<numberOfRows;x++){
+	latestEntry = earlierEntry;
+	latestExit = earlierExit;
+	earlierEntry = earlyRow[x].innerText;
+	earlierExit = earlierEntry;
+	earlierEntry = earlierEntry.substring(subStringPlacement[0],subStringPlacement[1]);
+	findBackSlash(earlierExit);
+	earlierExit=earlierExit.substring(subStringPlacement[2],subStringPlacement[3]);
+
+console.log(latestEntry+" "+latestExit);
+console.log(earlierEntry+" "+earlierExit);
+		checkEntryExit(latestEntry,earlierExit)
+
+}
+function checkEntryExit(latestEntry,earlierExit){
+	if(latestEntry == earlierExit){
+		var clickEntry= frameContent.document.querySelectorAll("tr.oddRow>td>a")
+		//clickEntry[rowIndex].click();
+		rowIndex+=2;
+		console.log("a match");
+	}else{
+		console.log("not a match");
+	}
+}
+function findBackSlash(exitDate){
+	for (var i =10; i<exitDate.length; i++){
+		
+		var backSlashChar=exitDate.charAt(i)
+		if(backSlashChar=="/"){
+			subStringPlacement[2]=i-2;
+			subStringPlacement[3]=i+8;
+			break;
+		
+	    }
+
+	}
+}
+
+
+var multiSelectClass="dialogDivM"
+var frameContent = window.frames["content"];
+if(  frameContent.document.getElementsByClassName(multiSelectClass);){
+ return true
+}else {
+ return false
+} 

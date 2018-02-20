@@ -25,9 +25,8 @@ namespace autoResign
         private string user = "";
         private string pass = "";
         private string url = "https://bridgeportedu.powerschool.com/admin/home.html";
-        private string staffURL = "https://bridgeportedu.powerschool.com/admin/faculty/search.html";
         private int count = 0;
-        private bool loginSuccess = false;
+        protected bool loginSuccess = false;
         private bool foundLogOut = true;
         protected bool foundLogIn = true;
         private string menu = "menu";
@@ -38,7 +37,13 @@ namespace autoResign
                      "  return false" +
                      "} " +
                      "})();";
-
+        private const string multiSelect = @"(function(){" +
+                                           "var multiSelectClass='dialogDivM'" +
+                                           "var frameContent = window.frames['content'];" +
+                                           "var multiSelectLink = frameContent.getElementsByClassName(multiSelectClass);" +
+                                           "console.log(multiSelectLink);" +
+                                           "multiSelectLink[0].click();" +
+                                           "})()";
         /*   const string loopCustomScreens = ("(function('menu'){" +
                      "var frameMenu=window.frames['{0}'];" +
                      "var list = frameMenu.document.getElementById('tchr_information');" +
@@ -76,12 +81,13 @@ namespace autoResign
 
             user = uName;
             var pass = uPass;
+            string webSite=url;
 
-        
 
             initChrome();
             loadJS(user, pass);
-            loadCheckJS();
+            
+            loadCheckJS(webSite); 
             searchTeacher();
 
         }
@@ -102,6 +108,7 @@ namespace autoResign
            
             Console.WriteLine("inititalize chrome");
             CefSettings settings = new CefSettings();
+            settings.RemoteDebuggingPort = 8088;
             Cef.Initialize(settings);
             chrome = new ChromiumWebBrowser(url);
             Controls.Add(chrome);
@@ -131,23 +138,23 @@ namespace autoResign
                     }
                     retryThread = new Thread(() => jsLogin(args, userText, passText));
                     retryThread.Start();
-                    while (retryThread.IsAlive) ;
+                    while (retryThread.IsAlive);
                 }
             };
         }
-        protected virtual void loadCheckJS()
+        protected virtual void loadCheckJS(string siteName)
         {
             chrome.FrameLoadEnd += (sender, args) =>
             {
                 if (args.Frame.IsMain)
                 {
-                    checkThread = new Thread(() => checkLoginButton(checkLogOut));
+                    checkThread = new Thread(() => checkLoginButton(checkLogOut,siteName));
                     checkThread.Start();
                     ///  autoResetEvent.WaitOne();
                 }
             };
         }
-        private void checkLoginButton(string checkArg)
+        private void checkLoginButton(string checkArg,string urlSite)
         {
 
             bool localBool = false;
@@ -167,7 +174,7 @@ namespace autoResign
                         if (foundLogIn == false && foundLogOut == true)
                         {
                             loginSuccess = true;
-                            chrome.Load(staffURL);
+                            chrome.Load(urlSite);
                         }
                         //autoResetEvent.Set();
                     }
@@ -230,6 +237,7 @@ namespace autoResign
         }
 
 
+  
         //studentSearchInput id for student input
         //teacherSearchInput id for teacher input
 

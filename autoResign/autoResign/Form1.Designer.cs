@@ -54,6 +54,7 @@
             this.parseID = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.overlaps = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // endDate
@@ -294,11 +295,24 @@
             this.label2.Text = "End Date";
             this.label2.Visible = false;
             // 
+            // overlaps
+            // 
+            this.overlaps.AutoSize = true;
+            this.overlaps.Location = new System.Drawing.Point(536, 160);
+            this.overlaps.Name = "overlaps";
+            this.overlaps.Size = new System.Drawing.Size(65, 17);
+            this.overlaps.TabIndex = 15;
+            this.overlaps.TabStop = true;
+            this.overlaps.Text = "overlaps";
+            this.overlaps.UseVisualStyleBackColor = true;
+            this.overlaps.CheckedChanged += new System.EventHandler(this.overlaps_CheckedChanged);
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 408);
+            this.Controls.Add(this.overlaps);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.parseID);
@@ -353,6 +367,7 @@
         protected System.Windows.Forms.Button parseID;
         protected System.Windows.Forms.Label label1;
         protected System.Windows.Forms.Label label2;
+        private System.Windows.Forms.RadioButton overlaps;
     }
 }
 

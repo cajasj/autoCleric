@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Microsoft.Win32;
 
 namespace autoResign
@@ -12,6 +13,7 @@ namespace autoResign
             Console.WriteLine("object is {0}", scriptPass.ElementAt(0));
             scriptPass.ElementAt(0).loginUser(logName,userPass);
            Console.WriteLine("call powerschool class");
+            
         }
     }
 }

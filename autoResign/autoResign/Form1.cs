@@ -26,6 +26,7 @@ namespace autoResign
         public List<powerSchool> scriptPass = new List<powerSchool>();
         public string[] idRay;
         public string path;
+        public int stateSchoolID = 8;
         public mainForm()
         {
             InitializeComponent();
@@ -46,21 +47,23 @@ namespace autoResign
                 foreach (string sID in idCorrectFormat)
                 {
                     sIDText.WriteLine(sID);
-                    Console.WriteLine("id {0} ", sID);
                    
                 }
-            };
+                sIDText.Close();
+            }
+            
             
             logName = userName.Text;
             userPass = passText.Text; 
             this.Hide();
             Console.WriteLine("id list path is {0}",path); 
-           
-            var admin = new callPowerSchool();
-            admin.enterSite(scriptPass, logName, userPass);
             
+            scriptPass.ElementAt(0).loginUser(logName, userPass);
+
+            scriptPass.ElementAt(0).ShowDialog();
             MessageBox.Show("session now over");
             this.Dispose();
+           
         }
         
 
@@ -75,20 +78,27 @@ namespace autoResign
         }
         private void parseID_Click(object sender, EventArgs e)
         {
+            parseIDCheck(stateSchoolID);    
+           
+        }
+
+        private void parseIDCheck(int idLength)
+        {
             string multiLineID = numberID.Text;
-            string [] idArray = multiLineID.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            string [] notNumber = new string [idArray.Length];
-            
+            string[] idArray = multiLineID.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            string[] notNumber = new string[idArray.Length];
+
             int k = 0;
             if (numberID.Text != "")
             {
                 foreach (var id in idArray)
                 {
-                    string studentIDTrimed = id.TrimEnd();
-                    int result;
-                    bool isNumber = int.TryParse(studentIDTrimed, out result);
-
-                    if (studentIDTrimed.Length != 8)
+                    string studentIDTrimed = id.Trim();
+                    double result;
+                    bool isNumber = double.TryParse(studentIDTrimed, out result);
+                    Console.WriteLine(isNumber);
+                    Console.WriteLine(studentIDTrimed.Length);
+                    if (studentIDTrimed.Length != idLength)
                     {
                         isNumber = false;
                     }
@@ -102,18 +112,18 @@ namespace autoResign
                     {
                         notNumber[k] = studentIDTrimed;
                         k++;
-                        
+
                     }
-                } 
-               
+                }
+
                 var notNumberCombined = string.Join("\n", notNumber);
                 const string pageBreak = "\n";
-                if (notNumberCombined=="" || notNumberCombined[0] == '\n')
+                if (notNumberCombined == "" || notNumberCombined[0] == '\n')
                 {
                     notNumberCombined = Regex.Replace(notNumberCombined, pageBreak, "");
                 }
 
-                if (notNumberCombined!="")
+                if (notNumberCombined != "")
 
                 {
                     MessageBox.Show(notNumberCombined);
@@ -127,7 +137,6 @@ namespace autoResign
             }
             var checkIDListView = new CheckTextBox();
             logIn.Enabled = checkIDListView.checkLine(rtcString);
-   
         }
         private void parseExcel_Click(object sender, EventArgs e)
         {
@@ -245,11 +254,33 @@ namespace autoResign
         }
 
 
+        private void overlaps_CheckedChanged(object sender, EventArgs e)
+        {
+            if (overlaps.Checked)
+            {
+                stateSchoolID = 10;
+                scriptPass.Clear();
+                scriptPass.Add(new StudentOverlaps());
+                studentID.Visible = true;
+                numberID.Visible = true;
+                parseID.Visible = true;
+                var checkIDListView = new CheckTextBox();
+                logIn.Enabled = checkIDListView.checkLine(rtcString);
+            }
+            else
+            {
+                studentID.Items.Clear();
+                studentID.Visible = false;
+                numberID.Visible = false;
+                parseID.Visible = false;
+            }
+        }
         private void fixRTC_CheckedChanged(object sender, EventArgs e)
         {
 
             if (fixRTC.Checked)
             {
+                stateSchoolID = 8;
                 scriptPass.Clear();
                 scriptPass.Add(new StudentRTC());
                 Console.WriteLine(scriptPass.ElementAt(0));
@@ -261,6 +292,7 @@ namespace autoResign
             }
             else
             {
+                studentID.Items.Clear();
                 studentID.Visible = false;
                 numberID.Visible = false;
                 parseID.Visible = false;
@@ -310,5 +342,6 @@ namespace autoResign
             var checkExcelListView=new CheckTextBox();
             logIn.Enabled = checkExcelListView.checkLine(excelString);
         }
+
     }
 }

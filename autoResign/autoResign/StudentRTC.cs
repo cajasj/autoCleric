@@ -47,12 +47,13 @@ namespace autoResign
                 Console.WriteLine("#{0} index \nid number is: {1} ", k, textID);
                 k++;
             }
+
+            sIDText.Close();
             System.IO.File.WriteAllText(path, string.Empty);
-          
             base.initChrome();
             base.loadJS(userNameLog, userPass);
-            base.loadCheckJS();
-        
+            base.loadCheckJS(url);
+            
             ShowDialog();
            Console.WriteLine("after showdialog");
         }
