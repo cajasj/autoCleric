@@ -116,7 +116,7 @@ multiSelectLink[0].click();
 var multiSelectID="multiSelVals"
 var multiSelect=document.getElementById(multiSelectID);
 console.log(multiSelect);
-var idArray=[]
+var idArray=["5707562112\n","7901129959\n","7474858728\n", "2093099541\n"]
 multiSelect.value="";
 multiSelect.value+=idArray[0];
 for(var i=1;i<idArray.length;i++){
