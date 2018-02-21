@@ -34,6 +34,12 @@ namespace autoResign
             document.getElementById('fldName').options[0].value='statenumber';
 
            })() ";
+        private const string clickResult = @"(function(){
+                var studentSelectionTable = document.getElementsByTagName('tbody');
+                var studentClick = studentSelectionTable[1].children;
+                var clickStudent =studentClick[0].querySelectorAll('a');
+                clickStudent[0].click();
+            })();";
         public override void loginUser(string name, string logPass)
         {
             int k = 0;
@@ -72,16 +78,22 @@ namespace autoResign
             {
                 if (args.Frame.IsMain)
                 {
-                    checkPlease=new Thread (() => checkTable());
-                    checkPlease.Start();
-                    while (checkPlease.IsAlive)
-                        Console.WriteLine(checkPlease.IsAlive);
+                   
+                   
                     if (runOnce == false)
                     {
+
+                        checkPlease = new Thread(() => checkTable());
+                        checkPlease.Start();
+                        while (checkPlease.IsAlive)
                         autoMulti(args);
                         inputMulti(args);
                         clickSearch(args);
                         Console.WriteLine(test++);
+                    }
+                    else
+                    {
+                        args.Frame.EvaluateScriptAsync(clickResult);
                     }
 
                      
