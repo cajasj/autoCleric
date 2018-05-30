@@ -97,9 +97,7 @@ namespace autoResign
                     string studentIDTrimed = id.Trim();
                     
                     double result;
-                    bool isNumber = double.TryParse(studentIDTrimed, out result);
-                    Console.WriteLine("idlength vanilla "+idLength);
-                    Console.WriteLine("idlength - " + idLengthMinus);
+                    bool isNumber = double.TryParse(studentIDTrimed, out result); 
                     if (studentIDTrimed.Length != idLength && studentIDTrimed.Length != idLengthMinus)
                     {
                         Console.WriteLine(studentIDTrimed);
@@ -356,8 +354,7 @@ namespace autoResign
             {
                 stateSchoolID = 8;
                 scriptPass.Clear();
-                scriptPass.Add(new cleanHistorical());
-                Console.WriteLine(scriptPass.ElementAt(0));
+                scriptPass.Add(new cleanHistorical()); 
                 studentID.Visible = true;
                 numberID.Visible = true;
                 parseID.Visible = true;

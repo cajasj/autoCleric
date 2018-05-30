@@ -122,8 +122,8 @@ namespace autoResign
             Console.WriteLine("input multi for each ");
             foreach (var id in studentID)
             {
-              
-               
+
+                Console.WriteLine(id);
                
                 var inputID = string.Format("document.getElementById('multiSelVals').value+={0}+'\\n';", id);
              
