@@ -55,6 +55,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.overlaps = new System.Windows.Forms.RadioButton();
+            this.historicalGrade = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // endDate
@@ -307,11 +308,24 @@
             this.overlaps.UseVisualStyleBackColor = true;
             this.overlaps.CheckedChanged += new System.EventHandler(this.overlaps_CheckedChanged);
             // 
+            // historicalGrade
+            // 
+            this.historicalGrade.AutoSize = true;
+            this.historicalGrade.Location = new System.Drawing.Point(536, 276);
+            this.historicalGrade.Name = "historicalGrade";
+            this.historicalGrade.Size = new System.Drawing.Size(130, 17);
+            this.historicalGrade.TabIndex = 16;
+            this.historicalGrade.TabStop = true;
+            this.historicalGrade.Text = "Clean Historical Grade";
+            this.historicalGrade.UseVisualStyleBackColor = true;
+            this.historicalGrade.CheckedChanged += new System.EventHandler(this.historicalGrade_CheckedChanged);
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 408);
+            this.Controls.Add(this.historicalGrade);
             this.Controls.Add(this.overlaps);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -368,6 +382,7 @@
         protected System.Windows.Forms.Label label1;
         protected System.Windows.Forms.Label label2;
         private System.Windows.Forms.RadioButton overlaps;
+        protected System.Windows.Forms.RadioButton historicalGrade;
     }
 }
 

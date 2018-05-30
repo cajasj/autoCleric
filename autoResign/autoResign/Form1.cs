@@ -87,21 +87,27 @@ namespace autoResign
             string multiLineID = numberID.Text;
             string[] idArray = multiLineID.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             string[] notNumber = new string[idArray.Length];
-
+            int idLengthMinus=idLength-1;
             int k = 0;
             if (numberID.Text != "")
             {
+
                 foreach (var id in idArray)
                 {
                     string studentIDTrimed = id.Trim();
+                    
                     double result;
                     bool isNumber = double.TryParse(studentIDTrimed, out result);
-                    Console.WriteLine(isNumber);
-                    Console.WriteLine(studentIDTrimed.Length);
-                    if (studentIDTrimed.Length != idLength)
+                    Console.WriteLine("idlength vanilla "+idLength);
+                    Console.WriteLine("idlength - " + idLengthMinus);
+                    if (studentIDTrimed.Length != idLength && studentIDTrimed.Length != idLengthMinus)
                     {
+                        Console.WriteLine(studentIDTrimed);
+                        Console.WriteLine(studentIDTrimed.Length);
                         isNumber = false;
                     }
+                    else { isNumber = true; }
+                    
                     if (isNumber)
                     {
                         idCorrectFormat.Add(studentIDTrimed);
@@ -343,5 +349,28 @@ namespace autoResign
             logIn.Enabled = checkExcelListView.checkLine(excelString);
         }
 
+        private void historicalGrade_CheckedChanged(object sender, EventArgs e)
+        {
+
+            if (historicalGrade.Checked)
+            {
+                stateSchoolID = 8;
+                scriptPass.Clear();
+                scriptPass.Add(new cleanHistorical());
+                Console.WriteLine(scriptPass.ElementAt(0));
+                studentID.Visible = true;
+                numberID.Visible = true;
+                parseID.Visible = true;
+                var checkIDListView = new CheckTextBox();
+                logIn.Enabled = checkIDListView.checkLine(rtcString);
+            }
+            else
+            {
+                studentID.Items.Clear();
+                studentID.Visible = false;
+                numberID.Visible = false;
+                parseID.Visible = false;
+            }
+        }
     }
 }

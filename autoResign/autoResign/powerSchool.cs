@@ -88,7 +88,7 @@ namespace autoResign
             loadJS(user, pass);
             
             loadCheckJS(webSite); 
-            searchTeacher();
+         //   searchTeacher();
 
         }
 
