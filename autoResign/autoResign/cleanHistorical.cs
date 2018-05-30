@@ -47,10 +47,7 @@ namespace autoResign
                 
             })();";
         private const string findHistoricalLink = @"(function(){
-            setTimeout(history,500)
-            function history(){
-                   console.log('after console in historical method half second')
-            }
+          
 
             console.log('after console in historical method normal')
 
