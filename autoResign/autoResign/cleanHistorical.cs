@@ -56,21 +56,97 @@ namespace autoResign
                 var academicList = frameMenu.document.getElementById(listID)
                 console.log(academicList.children.length)
                 var frameContent=window.frames['content'];
-
-                for(var i=0; i<academicList.children.length;i++){
-	                if(academicList.children[i].textContent=='Historical Grades'){
-		                academicList.children[i].querySelectorAll('a')[0].click() 
+                clickHistorical()
+                function clickHistorical(){
+                    for(var i=0; i<academicList.children.length;i++){
+	                    if(academicList.children[i].textContent=='Historical Grades'){
+		                    academicList.children[i].querySelectorAll('a')[0].click() 
+                        }
                     }
                 }
-            
                 console.log('string in the historical')    
                 var frameContent=window.frames['content'];
 
                 setTimeout(gridSearch,1000)
                 function gridSearch(){
                     var gradegrid = frameContent.document.querySelectorAll('table.grid>tbody>tr')
+                    var gradeColumn = gradegrid[0]
+                    var p1Location;
                     console.log(gradegrid) 
+                    var length=1;
+                    var firstRowLength = gradeColumn.children.length
+                    var l
+                    console.log(gradegrid[0])
+                    for( l=0;l<firstRowLength;l++){
+	                    if(gradeColumn.children[l].innerHTML=='P1'){
+		                    p1Location=l
+		                    break
+	                    }
+                    }
+                    gradeColumn = gradegrid
+                    var gridBoxLength=gradeColumn.length; 
+                    gradeColumn = gradegrid[1]
+                    var currentGradeLevel = gradeColumn.children[0].innerText.substring(0,5)
+
+                    var gradeLevel
+                    var grades = gradeColumn.children[p1Location].getElementsByTagName('a')
+
+                    for(l =1;l<gridBoxLength;l++){
+	                    gradeColumn = gradegrid[l]
+                        gradeLevel = gradeColumn.children[0].innerHTML.substring(0, 5)
+	                    if(gradeLevel!=currentGradeLevel){
+
+		                    break; 
+	                    }
+
+                    }
+                    length=l-1;
+                    console.log(gradegrid[length])
+                    for(var i=1;i<length;i++){
+	                        gradeColumn = gradegrid[i]
+                            grades = gradeColumn.children[p1Location].getElementsByTagName('a')
+
+                            gridBoxLength=grades.length
+	                        if(gridBoxLength>1){
+
+                                compareGrades(grades, gridBoxLength)
+	                        }
+ 
+                        }
+                        function compareGrades(gridBoxGrades, boxLength)
+                        {
+                            var gradeArray =[];
+                            var counter = 0;
+                            var k = 0;
+
+                            for (k = 0; k < boxLength; k++)
+                            {
+                                gradeArray[k] =[gridBoxGrades[k].innerHTML, gridBoxGrades[k]]
+
+
+                            }
+
+                            gradeArray.sort()
+
+                            console.log('after sort ')
+
+                            gradeArray[0][1].click()
+                            setTimeout(deleteMe,1000)
+                            
+                        }
                 } 
+                function deleteMe(){
+                    var deleteButtonID='btnbtnConfirmProxy'
+                    var deleteButton= frameContent.document.getElementById(deleteButtonID)
+                       
+                    console.log(deleteButton)
+                    deleteButton.click()
+                    var confirmID='btnDelete'
+                    var confirmation= frameContent.document.getElementById(confirmID)
+                    confirmation.click()
+
+                            clickHistorical()
+                }
    
         })()";
         private const string searching = @"(funtion(){
