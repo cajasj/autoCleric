@@ -20,7 +20,9 @@ namespace autoResign
         public List<string> studentID = new List<string>();
         public string readTextLine = " ";
         private bool runOnce = false;
+        private bool clickedHistorical = false;
         Thread checkPlease;
+        Thread searchMenu;
         private string checkTableLength = @"(function(){
                 if(document.getElementsByTagName('tbody')[1].children.length==0){
                     return false
@@ -48,29 +50,41 @@ namespace autoResign
             })();";
         private const string findHistoricalLink = @"(function(){
           
-
-            console.log('after console in historical method normal')
-
+ 
                 var frameMenu=window.frames['menu'];
                 var listID='std_academics'
                 var academicList = frameMenu.document.getElementById(listID)
                 console.log(academicList.children.length)
+                var frameContent=window.frames['content'];
+
                 for(var i=0; i<academicList.children.length;i++){
 	                if(academicList.children[i].textContent=='Historical Grades'){
-		                academicList.children[i].querySelectorAll('a')[0].click()
+		                academicList.children[i].querySelectorAll('a')[0].click() 
                     }
                 }
-        })()";
-
-        private const string searchGrade = @"(function(){
             
-        var frameContent=window.frames['content'];
-        var gradegrid = frameContent.document.querySelectorAll('table.grid>tbody>tr')
-        var gradeColumn = gradegrid[0]
-        var p1Location;
-        var firstRowLength = gradeColumn.children.length
+                console.log('string in the historical')    
+                var frameContent=window.frames['content'];
 
-        }";
+                setTimeout(gridSearch,1000)
+                function gridSearch(){
+                    var gradegrid = frameContent.document.querySelectorAll('table.grid>tbody>tr')
+                    console.log(gradegrid) 
+                } 
+   
+        })()";
+        private const string searching = @"(funtion(){
+              
+            var frameContent=window.frames['content'];
+            var gradegrid = frameContent.document.querySelectorAll('table.grid>tbody>tr')
+            var gradeColumn = gradegrid[0]
+            var p1Location;
+            var firstRowLength = gradeColumn.children.length
+
+            if(gradegrid.length>1){
+                console.log('true in the historical')
+            } 
+        })()";
         public override void loginUser(string name, string logPass)
         {
             int k = 0;
@@ -103,9 +117,13 @@ namespace autoResign
 
             clickMultiSelect();
             historicalGrades();
+             searchGrades();
             ShowDialog();
             Console.WriteLine("after showdialog");
         }
+
+    
+
         protected virtual void clickMultiSelect()
         {
 
@@ -146,16 +164,29 @@ namespace autoResign
                 if (args.Frame.IsMain)
                 {
                     Console.WriteLine("in the historical method");
-                    findLink(args);
+
+                    searchMenu = new Thread(() => findLink(args));
+                    searchMenu.Start();
+                    while (searchMenu.IsAlive) ;
+                    clickedHistorical = true;
                 }
             };
         }
+        private void searchGrades()
+        {
+            //chrome.FrameLoadEnd += (sender, args) =>
+            //{
+            //    if (args.Frame.IsMain && clickedHistorical)
+            //    {
+            //        args.Frame.EvaluateScriptAsync(searching);
+            //    }
+            //};
+         }
         private void findLink(FrameLoadEndEventArgs args)
         {
             Console.WriteLine("in find link method");
             args.Frame.EvaluateScriptAsync(findHistoricalLink);
-            //var clickHistorical = string.Format("window.frames['menu'].document.getElementById('std_academics').children[6].querySelectorAll('a')[0].click()");
-            //args.Frame.EvaluateScriptAsync(clickHistorical);
+            searchMenu.Abort();
         }
         private void autoMulti(FrameLoadEndEventArgs args)
         {

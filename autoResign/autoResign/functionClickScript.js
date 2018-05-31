@@ -116,7 +116,8 @@ multiSelectLink[0].click();
 var multiSelectID="multiSelVals"
 var multiSelect=document.getElementById(multiSelectID);
 console.log(multiSelect);
-var idArray=[" "]
+var idArray=[" 8056640\n ", "8056640 \n ","8053443\n ","8053443 \n ","8054170\n ","8054170\n ",
+"10001188\n "]
 multiSelect.value="";
 multiSelect.value+=idArray[0];
 for(var i=1;i<idArray.length;i++){
@@ -293,8 +294,6 @@ var navRightButton="button next"
 var navNextButton = frameMenu.document.getElementsByClassName(navRightButton);
 navNextButton[0].click();
 
-
-
 /*for c# later
 dictionary that holds value for the grades
 use loop to loope gradegrid[] to check gradeColumn.children[2].innerText to match the course numbers pulled from c#
@@ -383,6 +382,15 @@ function compareGrades(gridBoxGrades,boxLength){
 	console.log(gradeArray)
 }
 
+var frameMenu=window.frames["menu"];
+var academicList  = frameMenu.document.getElementById("std_academics")
+console.log(academicList.children.length)
+for(var i=0; i<academicList.children.length;i++){
+	if(academicList.children[i].innerText=="Historical Grades"){
+		academicList.children[i].firstChild.click()
+	}
+}
+academicList.children[5].click()
 //////////////STOP COPYUING THIS
 var multiSelectClass="dialogDivM"
 var frameContent = window.frames["content"];
@@ -397,4 +405,13 @@ if(  frameContent.document.getElementsByClassName(multiSelectClass);){
 /// ex (people/100)*miliseconds (150/100)*1000
 // ok so if the previous enrollment overlaps are greater than current enrolment skip write in text file
 // go to next student
- 
+ 		var frameMenu=window.frames['menu'];
+        var listID='std_academics'
+        var academicList = frameMenu.document.getElementById(listID)
+        console.log(academicList.children.length)
+            for(var i=0; i<academicList.children.length;i++){
+	            if(academicList.children[i].textContent=='Historical Grades'){
+		            academicList.children[i].querySelectorAll('a')[0].click()
+                }
+            }   
+        }
