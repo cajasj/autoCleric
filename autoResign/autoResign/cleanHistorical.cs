@@ -69,7 +69,8 @@ namespace autoResign
                         }
                     }
                 }
-                console.log('string in the historical')     
+                console.log('string in the historical')    
+                
                 function gridSearch(){
 
                 var frameContent=window.frames['content'];
@@ -109,7 +110,7 @@ namespace autoResign
                     length=l-1;
                     console.log('length of grade grid ') 
                     console.log(gradegrid[length])
-                    for(var i=1;i<length;i++){
+                    for(var i=1;i<=length;i++){
 	                        gradeColumn = gradegrid[i]
                             grades = gradeColumn.children[p1Location].getElementsByTagName('a')
 
