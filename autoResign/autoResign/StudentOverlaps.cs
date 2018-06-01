@@ -19,6 +19,7 @@ namespace autoResign
         private string url = "https://bridgeportedu.powerschool.com/admin/home.html";
         public string pathState = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\idList.txt";
         private bool runOnce = false;
+        private bool checkTablePage = false;
         public List<string> studentID = new List<string>();
         public string readTextLine=" ";
         Thread checkPlease;
@@ -36,10 +37,11 @@ namespace autoResign
            })() ";
         private const string clickResult = @"(function(){
                 var studentSelectionTable = document.getElementsByTagName('tbody');
-                var studentClick = studentSelectionTable[1].children;
+                 var studentClick = studentSelectionTable[1].children;
                 var clickStudent =studentClick[0].querySelectorAll('a');
                 clickStudent[0].click();
             })();";
+
         public override void loginUser(string name, string logPass)
         {
             int k = 0;
@@ -86,6 +88,7 @@ namespace autoResign
                         checkPlease = new Thread(() => checkTable());
                         checkPlease.Start();
                         while (checkPlease.IsAlive)
+                        checkTablePage = runOnce;
                         autoMulti(args);
                         inputMulti(args);
                         clickSearch(args);
@@ -94,6 +97,7 @@ namespace autoResign
                     else
                     {
                         args.Frame.EvaluateScriptAsync(clickResult);
+                        Console.WriteLine("when run once is true");
                     }
 
                      
@@ -138,10 +142,13 @@ namespace autoResign
                 if (response.Success && response.Result != null)
                 {
                     runOnce = (bool)response.Result;
+                    checkTablePage=runOnce;
                     Console.WriteLine("run once is now {0}", runOnce);
                     checkPlease.Abort();
                 }
             });
         }
+
+        
     }
 }
