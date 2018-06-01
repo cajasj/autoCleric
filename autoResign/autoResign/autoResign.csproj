@@ -73,6 +73,9 @@
     <Compile Include="CheckTextBox.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="cleanHistorical.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="credentialInput.cs">
       <SubType>Form</SubType>
     </Compile>

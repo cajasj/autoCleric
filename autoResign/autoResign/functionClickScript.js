@@ -116,7 +116,8 @@ multiSelectLink[0].click();
 var multiSelectID="multiSelVals"
 var multiSelect=document.getElementById(multiSelectID);
 console.log(multiSelect);
-var idArray=[]
+var idArray=[" 8056640\n ", "8056640 \n ","8053443\n ","8053443 \n ","8054170\n ","8054170\n ",
+"10001188\n "]
 multiSelect.value="";
 multiSelect.value+=idArray[0];
 for(var i=1;i<idArray.length;i++){
@@ -217,11 +218,12 @@ changeBothdatesfunction(){
 
 }
 var boxRound="box-round";
- var frameMenu=window.frames["frameContent"];
+ var frameMenu=window.frames["menu"];
 var tableBody =frameMenu.getElementsByClassName(boxRound);
 console.log(tableBody.getElementsByTagName("tr"));
-
-
+//////////////////////////
+//check entry exit script
+////////////////////////
 var subStringPlacement=[0,10,14,25];
 var frameContent=window.frames["content"];
 var lateRow = frameContent.document.getElementsByTagName("tr");
@@ -229,23 +231,26 @@ var earlyRow = frameContent.document.querySelectorAll("tr.oddRow");
 var rowIndex=0;
 var numberOfRows= earlyRow.length-1;
 
+///initiate with current enrollment after initial row in the for loop it will use the previous enrollment table
 var latestEntry =lateRow[2].innerText;
 var latestExit = latestEntry;
 latestEntry= latestEntry.substring(subStringPlacement[0],subStringPlacement[1]);
 
+////goes to previous enrollment
 var earlierEntry = earlyRow[0].innerText;
 var earlierExit = earlierEntry;
 earlierEntry = earlierEntry.substring(subStringPlacement[0],subStringPlacement[1]);
-latestEntry = latestEntry.substring(subStringPlacement[0],subStringPlacement[1]);
 
 findBackSlash(latestExit);
 latestExit=latestExit.substring(subStringPlacement[2],subStringPlacement[3]);
 findBackSlash(earlierExit);
 earlierExit=earlierExit.substring(subStringPlacement[2],subStringPlacement[3]);
-
+console.log(earlierExit+" " + latestExit)
+console.log(earlierEntry+" "+earlierExit);
 checkEntryExit(latestEntry,earlierExit)
 
 for(var x=1;x<numberOfRows;x++){
+	rowIndex+=2;
 	latestEntry = earlierEntry;
 	latestExit = earlierExit;
 	earlierEntry = earlyRow[x].innerText;
@@ -254,36 +259,139 @@ for(var x=1;x<numberOfRows;x++){
 	findBackSlash(earlierExit);
 	earlierExit=earlierExit.substring(subStringPlacement[2],subStringPlacement[3]);
 
-console.log(latestEntry+" "+latestExit);
-console.log(earlierEntry+" "+earlierExit);
-		checkEntryExit(latestEntry,earlierExit)
-
+	console.log(latestEntry+" "+latestExit);
+	console.log(earlierEntry+" "+earlierExit);
+	checkEntryExit(latestEntry,earlierExit)
+	
 }
 function checkEntryExit(latestEntry,earlierExit){
 	if(latestEntry == earlierExit){
 		var clickEntry= frameContent.document.querySelectorAll("tr.oddRow>td>a")
-		//clickEntry[rowIndex].click();
-		rowIndex+=2;
-		console.log("a match");
+		console.log(clickEntry+ " row index:"+rowIndex);
+		clickEntry[rowIndex].click();
+		console.log("a match_______________________________________");
 	}else{
 		console.log("not a match");
 	}
 }
+////starts at 10 because that's the ammount of characters for entry date
+///just need to find first instance of backslash -2 first parameter to sub string inner text
+///gets the last chaaracter of the date since i would be the first / it already have 2 out of the 10 characters
 function findBackSlash(exitDate){
 	for (var i =10; i<exitDate.length; i++){
-		
 		var backSlashChar=exitDate.charAt(i)
 		if(backSlashChar=="/"){
-			subStringPlacement[2]=i-2;
-			subStringPlacement[3]=i+8;
-			break;
-		
-	    }
-
+			subStringPlacement[2]=i-2; 
+			subStringPlacement[3]=i+8; 
+			break; 
+	    } 
 	}
 }
+///to go to next student click the next button in the left pane
+var frameMenu=window.frames["menu"];
+var navListClass="studentSearchList";
+var navRightButton="button next"
+var navNextButton = frameMenu.document.getElementsByClassName(navRightButton);
+navNextButton[0].click();
+
+/*for c# later
+dictionary that holds value for the grades
+use loop to loope gradegrid[] to check gradeColumn.children[2].innerText to match the course numbers pulled from c#
+then pull store code from c# make turn it to  index=dictionary[test]
+because a stuednt might take another class you would need a pull for the grade level to
+check if the value is different from the  gpa error
+*/
+var dictionary={
+	"e1":5,
+	"e2":6,
+	"p1":6,
+	"p2":8,
+	"p3":9,
+	"q1":10,
+	"q2":11,
+	"q3":12,
+	"q4":13,
+	"s1":14,
+	"s2":15,
+	"y1":16,
+}
+var test="p1"
+var index=dictionary[test]
 
 
+ 
+
+
+var frameContent=window.frames["content"];
+var gradegrid =frameContent.document.querySelectorAll("table.grid>tbody>tr")
+var gradeColumn = gradegrid[0]
+var p1Location;
+var firstRowLength= gradeColumn.children.length
+
+
+var length=1;
+var l
+console.log(gradegrid[0])
+for( l=0;l<firstRowLength;l++){
+	if(gradeColumn.children[l].innerHTML=="P1"){
+		p1Location=l
+		break
+	}
+}
+gradeColumn = gradegrid
+var gridBoxLength=gradeColumn.length; 
+gradeColumn = gradegrid[1]
+var currentGradeLevel = gradeColumn.children[0].innerText.substring(0,5)
+
+var gradeLevel
+var grades =gradeColumn.children[p1Location].getElementsByTagName("a")
+
+for( l =1;l<gridBoxLength;l++){
+	gradeColumn = gradegrid[l]
+	gradeLevel = gradeColumn.children[0].innerHTML.substring(0,5)	
+	if(gradeLevel!=currentGradeLevel){
+
+		break; 
+	}
+
+}
+length=l-1;
+console.log(gradegrid[length])
+
+for(var i=1;i<length;i++){
+	gradeColumn = gradegrid[i]
+	grades =gradeColumn.children[p1Location].getElementsByTagName("a")
+	gridBoxLength=grades.length
+	if(gridBoxLength>1){
+		compareGrades(grades, gridBoxLength)
+	}
+ 
+}
+function compareGrades(gridBoxGrades,boxLength){
+	var gradeArray=[];
+	var counter=0;
+	var k =0; 
+
+	for (k =0; k<boxLength;k++){
+		gradeArray[k]=[gridBoxGrades[k].innerHTML,gridBoxGrades[k]]
+		
+	}
+ 
+	gradeArray.sort()
+	console.log("after sort ")
+	console.log(gradeArray)
+}
+
+var frameMenu=window.frames["menu"];
+var academicList  = frameMenu.document.getElementById("std_academics")
+console.log(academicList.children.length)
+for(var i=0; i<academicList.children.length;i++){
+	if(academicList.children[i].innerText=="Historical Grades"){
+		academicList.children[i].firstChild.click()
+	}
+}
+academicList.children[5].click()
+//////////////STOP COPYUING THIS
 var multiSelectClass="dialogDivM"
 var frameContent = window.frames["content"];
 if(  frameContent.document.getElementsByClassName(multiSelectClass);){
@@ -291,3 +399,19 @@ if(  frameContent.document.getElementsByClassName(multiSelectClass);){
 }else {
  return false
 } 
+
+/// ok to make timeout modular you gotta get the length from c# pass it into js divide it by 100
+/// multiply by the 1000 miliseconds
+/// ex (people/100)*miliseconds (150/100)*1000
+// ok so if the previous enrollment overlaps are greater than current enrolment skip write in text file
+// go to next student
+ 		var frameMenu=window.frames['menu'];
+        var listID='std_academics'
+        var academicList = frameMenu.document.getElementById(listID)
+        console.log(academicList.children.length)
+            for(var i=0; i<academicList.children.length;i++){
+	            if(academicList.children[i].textContent=='Historical Grades'){
+		            academicList.children[i].querySelectorAll('a')[0].click()
+                }
+            }   
+        }

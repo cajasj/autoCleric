@@ -30,13 +30,13 @@ namespace autoResign
         private bool foundLogOut = true;
         protected bool foundLogIn = true;
         private string menu = "menu";
-        const string checkLogOut = @"(function(){ " +
-                     "if( document.getElementById('btnLogout')){" +
-                     "  return true" +
-                     "}else {" +
-                     "  return false" +
-                     "} " +
-                     "})();";
+        const string checkLogOut = @"(function(){ 
+                     if( document.getElementById('btnLogout')){
+                       return true
+                     }else {
+                       return false
+                     }
+                     })();";
         private const string multiSelect = @"(function(){" +
                                            "var multiSelectClass='dialogDivM'" +
                                            "var frameContent = window.frames['content'];" +
@@ -88,7 +88,7 @@ namespace autoResign
             loadJS(user, pass);
             
             loadCheckJS(webSite); 
-            searchTeacher();
+         //   searchTeacher();
 
         }
 

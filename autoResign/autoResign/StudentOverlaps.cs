@@ -30,16 +30,23 @@ namespace autoResign
                     return true
                 }
             })();";
+
         private const string multiInputClick = @"(function(){
             document.getElementsByClassName('dialogDivM')[0].click();
             document.getElementById('fldName').options[0].value='statenumber';
 
            })() ";
         private const string clickResult = @"(function(){
+                setTimeout(clickMe, 1000)
+                function clickMe(){
+                console.log('in the click after a second');
+
                 var studentSelectionTable = document.getElementsByTagName('tbody');
                  var studentClick = studentSelectionTable[1].children;
                 var clickStudent =studentClick[0].querySelectorAll('a');
                 clickStudent[0].click();
+                }
+                
             })();";
 
         public override void loginUser(string name, string logPass)
@@ -92,12 +99,14 @@ namespace autoResign
                         autoMulti(args);
                         inputMulti(args);
                         clickSearch(args);
-                        Console.WriteLine(test++);
+                        
                     }
                     else
                     {
-                        args.Frame.EvaluateScriptAsync(clickResult);
-                        Console.WriteLine("when run once is true");
+
+                            args.Frame.EvaluateScriptAsync(clickResult);
+                       
+                            Console.WriteLine("run once is false");                  
                     }
 
                      
@@ -116,8 +125,8 @@ namespace autoResign
             Console.WriteLine("input multi for each ");
             foreach (var id in studentID)
             {
-              
-               
+
+                Console.WriteLine(id);
                
                 var inputID = string.Format("document.getElementById('multiSelVals').value+={0}+'\\n';", id);
              
