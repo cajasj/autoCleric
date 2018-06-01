@@ -21,6 +21,8 @@ namespace autoResign
         public string readTextLine = " ";
         private bool runOnce = false;
         private bool clickedHistorical = false;
+
+        private int kount = 0;
         Thread checkPlease;
         Thread searchMenu;
         private string checkTableLength = @"(function(){
@@ -50,32 +52,35 @@ namespace autoResign
             })();";
         private const string findHistoricalLink = @"(function(){
           
- 
-                var frameMenu=window.frames['menu'];
-                var listID='std_academics'
-                var academicList = frameMenu.document.getElementById(listID)
-                console.log(academicList.children.length)
-                var frameContent=window.frames['content'];
+  
                 clickHistorical()
                 function clickHistorical(){
+
+                var frameMenu=window.frames['menu'];
+                var listID='std_academics'
+                var academicList = frameMenu.document.getElementById(listID) 
                     for(var i=0; i<academicList.children.length;i++){
 	                    if(academicList.children[i].textContent=='Historical Grades'){
 		                    academicList.children[i].querySelectorAll('a')[0].click() 
+                            
+                            setTimeout(gridSearch,1500)
                         }
                     }
                 }
                 console.log('string in the historical')    
-                var frameContent=window.frames['content'];
-
-                setTimeout(gridSearch,1000)
+                
                 function gridSearch(){
+                console.log('in grid search')    
+                    var frameContent=window.frames['content'];
                     var gradegrid = frameContent.document.querySelectorAll('table.grid>tbody>tr')
                     var gradeColumn = gradegrid[0]
                     var p1Location;
+                    console.log('table grade grd') 
                     console.log(gradegrid) 
                     var length=1;
                     var firstRowLength = gradeColumn.children.length
                     var l
+                    console.log('index 0 gradegrid ') 
                     console.log(gradegrid[0])
                     for( l=0;l<firstRowLength;l++){
 	                    if(gradeColumn.children[l].innerHTML=='P1'){
@@ -101,43 +106,55 @@ namespace autoResign
 
                     }
                     length=l-1;
-                    console.log(gradegrid[length])
-                    for(var i=1;i<length;i++){
-	                    gradeColumn = gradegrid[i]
-                        grades = gradeColumn.children[p1Location].getElementsByTagName('a')
-
+                    console.log('length of grade grid ') 
+                    console.log(length)
+                    var i
+                    for(i=1;i<=length;i++){
+	                        gradeColumn = gradegrid[i]
+                            grades = gradeColumn.children[p1Location].getElementsByTagName('a') 
+                
                         gridBoxLength=grades.length
+                        
+                        console.log('grid box length')
+                        console.log(gridBoxLength)
 	                    if(gridBoxLength>1){
 
                             compareGrades(grades, gridBoxLength)
 	                    }
  
                     }
-                    if(gridBoxLength==0){
-                        nextStudent();
+                    console.log('length of grade grid out of loop ') 
+                    console.log(length)
+                    console.log('length of i ') 
+                    console.log(i)
+                    if(gridBoxLength<=1&& i == length){
+                        console.log('dups clean') 
                     }
-                    function compareGrades(gridBoxGrades, boxLength)
+      
+                } 
+                function compareGrades(gridBoxGrades, boxLength) {
+                    console.log('in compare grades')    
+                    var gradeArray =[];
+                    var counter = 0;
+                    var k = 0;
+
+                    for (k = 0; k < boxLength; k++)
                     {
-                        var gradeArray =[];
-                        var counter = 0;
-                        var k = 0;
-
-                        for (k = 0; k < boxLength; k++)
-                        {
-                            gradeArray[k] =[gridBoxGrades[k].innerHTML, gridBoxGrades[k]]
-
-
-                        }
-
-                        gradeArray.sort()
-
-                        console.log('after sort ')
-
-                        console.log(gradeArray[0][1].click())
-                        setTimeout(deleteMe,1500)
+                        gradeArray[k] =[gridBoxGrades[k].innerHTML, gridBoxGrades[k]]
                     }
+
+                    gradeArray.sort()
+ 
+                    console.log('after sort ')
+                    console.log(gradeArray)
+                    console.log('index[1][1] ')
+                    console.log(gradeArray[1][1])
+                    gradeArray[1][1].click()
+                    setTimeout(deleteMe,2000)
+                            
                 } 
                 function nextStudent(){
+                        console.log('in next studetn')
                     var frameMenu=window.frames['menu'];
  
                     var navListClass = 'studentSearchList';
@@ -150,6 +167,8 @@ namespace autoResign
 
                 };
                 function deleteMe(){
+                   var frameContent=window.frames['content'];
+                     console.log('in delete')
                     var deleteButtonID='btnbtnConfirmProxy'
                     var deleteButton= frameContent.document.getElementById(deleteButtonID)
                        
@@ -162,21 +181,9 @@ namespace autoResign
                 }
    
         })()";
-        private const string searching = @"(funtion(){
-              
-            var frameContent=window.frames['content'];
-            var gradegrid = frameContent.document.querySelectorAll('table.grid>tbody>tr')
-            var gradeColumn = gradegrid[0]
-            var p1Location;
-            var firstRowLength = gradeColumn.children.length
 
-            if(gradegrid.length>1){
-                console.log('true in the historical')
-            } 
-        })()";
         public override void loginUser(string name, string logPass)
         {
-            int k = 0;
             userNameLog = name;
             userPass = logPass;
            
@@ -194,8 +201,8 @@ namespace autoResign
 
             foreach (string textID in studentID)
             {
-                Console.WriteLine("#{0} index \nid number is: {1} ", k, textID);
-                k++;
+                Console.WriteLine("#{0} index \nid number is: {1} ", kount, textID);
+                kount++;
             }
 
             sIDText.Close();
@@ -205,8 +212,7 @@ namespace autoResign
             base.loadCheckJS(url);
 
             clickMultiSelect();
-            historicalGrades();
-             searchGrades();
+            historicalGrades(); 
             ShowDialog();
             Console.WriteLine("after showdialog");
         }
@@ -260,21 +266,13 @@ namespace autoResign
                     clickedHistorical = true;
                 }
             };
-        }
-        private void searchGrades()
-        {
-            //chrome.FrameLoadEnd += (sender, args) =>
-            //{
-            //    if (args.Frame.IsMain && clickedHistorical)
-            //    {
-            //        args.Frame.EvaluateScriptAsync(searching);
-            //    }
-            //};
-         }
+        } 
         private void findLink(FrameLoadEndEventArgs args)
         {
             Console.WriteLine("in find link method");
+            Console.WriteLine("kount is {0}", kount);
             args.Frame.EvaluateScriptAsync(findHistoricalLink);
+                
             searchMenu.Abort();
         }
         private void autoMulti(FrameLoadEndEventArgs args)
