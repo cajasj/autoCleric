@@ -103,38 +103,52 @@ namespace autoResign
                     length=l-1;
                     console.log(gradegrid[length])
                     for(var i=1;i<length;i++){
-	                        gradeColumn = gradegrid[i]
-                            grades = gradeColumn.children[p1Location].getElementsByTagName('a')
+	                    gradeColumn = gradegrid[i]
+                        grades = gradeColumn.children[p1Location].getElementsByTagName('a')
 
-                            gridBoxLength=grades.length
-	                        if(gridBoxLength>1){
+                        gridBoxLength=grades.length
+	                    if(gridBoxLength>1){
 
-                                compareGrades(grades, gridBoxLength)
-	                        }
+                            compareGrades(grades, gridBoxLength)
+	                    }
  
-                        }
-                        function compareGrades(gridBoxGrades, boxLength)
+                    }
+                    if(gridBoxLength==0){
+                        nextStudent();
+                    }
+                    function compareGrades(gridBoxGrades, boxLength)
+                    {
+                        var gradeArray =[];
+                        var counter = 0;
+                        var k = 0;
+
+                        for (k = 0; k < boxLength; k++)
                         {
-                            var gradeArray =[];
-                            var counter = 0;
-                            var k = 0;
-
-                            for (k = 0; k < boxLength; k++)
-                            {
-                                gradeArray[k] =[gridBoxGrades[k].innerHTML, gridBoxGrades[k]]
+                            gradeArray[k] =[gridBoxGrades[k].innerHTML, gridBoxGrades[k]]
 
 
-                            }
-
-                            gradeArray.sort()
-
-                            console.log('after sort ')
-
-                            gradeArray[0][1].click()
-                            setTimeout(deleteMe,1000)
-                            
                         }
+
+                        gradeArray.sort()
+
+                        console.log('after sort ')
+
+                        console.log(gradeArray[0][1].click())
+                        setTimeout(deleteMe,1500)
+                    }
                 } 
+                function nextStudent(){
+                    var frameMenu=window.frames['menu'];
+ 
+                    var navListClass = 'studentSearchList';
+                    var navID = 'nav-main-frame-secondary';
+                    var navRightButton = 'button next'
+                    var navFrameMenu = frameMenu.document.getElementsByClassName(navListClass);
+                    var navNextButton = frameMenu.document.getElementsByClassName(navRightButton);
+                    var numberString = navFrameMenu[0].text;
+                    navNextButton[0].click();
+
+                };
                 function deleteMe(){
                     var deleteButtonID='btnbtnConfirmProxy'
                     var deleteButton= frameContent.document.getElementById(deleteButtonID)
@@ -142,9 +156,8 @@ namespace autoResign
                     console.log(deleteButton)
                     deleteButton.click()
                     var confirmID='btnDelete'
-                    var confirmation= frameContent.document.getElementById(confirmID)
+                    var confirmation= frameContent.document.getElementById(confirmID) 
                     confirmation.click()
-
                             clickHistorical()
                 }
    

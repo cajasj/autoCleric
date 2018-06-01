@@ -415,3 +415,23 @@ if(  frameContent.document.getElementsByClassName(multiSelectClass);){
                 }
             }   
         }
+
+
+var frameContent=window.frames['content'];
+        var deleteButtonID='btnbtnConfirmProxy'
+var deleteButton= frameContent.document.getElementById(deleteButtonID)
+deleteButton.click()
+var confirmID='btnDelete'
+var confirmation= frameContent.document.getElementById(confirmID)
+console.log(confirmation)
+
+var frameMenu=window.frames["menu"];
+  var frameContent=window.frames["content"];
+
+  var navListClass="studentSearchList";
+  var navID="nav-main-frame-secondary";
+  var navRightButton="button next"
+  var navFrameMenu=frameMenu.document.getElementsByClassName(navListClass); 
+  var navNextButton = frameMenu.document.getElementsByClassName(navRightButton);
+  var numberString =navFrameMenu[0].text;
+ navNextButton[0].click();
